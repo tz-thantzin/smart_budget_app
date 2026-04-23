@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static ThemeData lightTheme = _buildTheme(Brightness.light);
-  static ThemeData darkTheme = _buildTheme(Brightness.dark);
+  static ThemeData get lightTheme => _buildTheme(Brightness.light);
+  static ThemeData get darkTheme => _buildTheme(Brightness.dark);
 
   static ThemeData _buildTheme(Brightness brightness) {
     const seed = Color(0xFF0E7C66);
@@ -20,35 +19,35 @@ class AppTheme {
     final isDark = brightness == Brightness.dark;
 
     final defaultTextColor = colorScheme.onSurface;
-    final textTheme = GoogleFonts.interTextTheme(base.textTheme)
+    final textTheme = base.textTheme
         .apply(bodyColor: defaultTextColor, displayColor: defaultTextColor)
         .copyWith(
-          headlineLarge: GoogleFonts.inter(
+          headlineLarge: base.textTheme.headlineLarge?.copyWith(
             fontSize: 30.sp,
             fontWeight: FontWeight.w800,
             color: defaultTextColor,
           ),
-          titleLarge: GoogleFonts.inter(
+          titleLarge: base.textTheme.titleLarge?.copyWith(
             fontSize: 22.sp,
             fontWeight: FontWeight.w700,
             color: defaultTextColor,
           ),
-          titleMedium: GoogleFonts.inter(
+          titleMedium: base.textTheme.titleMedium?.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
             color: defaultTextColor,
           ),
-          bodyLarge: GoogleFonts.inter(
+          bodyLarge: base.textTheme.bodyLarge?.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             color: defaultTextColor,
           ),
-          bodySmall: GoogleFonts.inter(
+          bodySmall: base.textTheme.bodySmall?.copyWith(
             fontSize: 12.sp,
             fontWeight: FontWeight.w400,
             color: defaultTextColor,
           ),
-          labelLarge: GoogleFonts.inter(
+          labelLarge: base.textTheme.labelLarge?.copyWith(
             fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: defaultTextColor,

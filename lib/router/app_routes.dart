@@ -11,11 +11,6 @@ class AppRoutes {
   static const budgets = '/budgets';
   static const addEditBudget = '/budgets/add-edit';
   static const budgetDetail = '/budgets/detail';
-  static const savingsGoal = '/savings-goal';
-  static const wallet = '/wallet';
   static const reports = '/reports';
-  static const receiptScan = '/receipt-scan';
-  static const notifications = '/notifications';
   static const settings = '/settings';
-  static const profile = '/profile';
 }

@@ -270,22 +270,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get savingsGoal => 'Savings Goal';
-
-  @override
-  String get walletAccount => 'Wallet / Account';
-
-  @override
   String get reportsAnalytics => 'Reports / Analytics';
-
-  @override
-  String get receiptScan => 'Receipt Scan';
-
-  @override
-  String get notifications => 'Notifications';
-
-  @override
-  String get profilePreferences => 'Profile / Preferences';
 
   @override
   String get reports => 'Reports';

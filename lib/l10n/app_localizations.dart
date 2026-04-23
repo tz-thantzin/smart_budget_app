@@ -595,41 +595,11 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
-  /// No description provided for @savingsGoal.
-  ///
-  /// In en, this message translates to:
-  /// **'Savings Goal'**
-  String get savingsGoal;
-
-  /// No description provided for @walletAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Wallet / Account'**
-  String get walletAccount;
-
   /// No description provided for @reportsAnalytics.
   ///
   /// In en, this message translates to:
   /// **'Reports / Analytics'**
   String get reportsAnalytics;
-
-  /// No description provided for @receiptScan.
-  ///
-  /// In en, this message translates to:
-  /// **'Receipt Scan'**
-  String get receiptScan;
-
-  /// No description provided for @notifications.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get notifications;
-
-  /// No description provided for @profilePreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile / Preferences'**
-  String get profilePreferences;
 
   /// No description provided for @reports.
   ///

@@ -268,22 +268,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get ok => 'အိုကေ';
 
   @override
-  String get savingsGoal => 'စုဆောင်းငွေ ပန်းတိုင်';
-
-  @override
-  String get walletAccount => 'ပိုက်ဆံအိတ် / အကောင့်';
-
-  @override
   String get reportsAnalytics => 'အစီရင်ခံစာ / သုံးသပ်ချက်';
-
-  @override
-  String get receiptScan => 'ပြေစာ စကန်';
-
-  @override
-  String get notifications => 'အသိပေးချက်များ';
-
-  @override
-  String get profilePreferences => 'ပရိုဖိုင် / နှစ်သက်ရာများ';
 
   @override
   String get reports => 'အစီရင်ခံစာများ';

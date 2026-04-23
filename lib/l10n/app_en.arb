@@ -95,12 +95,7 @@
     }
   },
   "ok": "OK",
-  "savingsGoal": "Savings Goal",
-  "walletAccount": "Wallet / Account",
   "reportsAnalytics": "Reports / Analytics",
-  "receiptScan": "Receipt Scan",
-  "notifications": "Notifications",
-  "profilePreferences": "Profile / Preferences",
   "reports": "Reports",
   "expenseReport": "Expense Report",
   "totalSpent": "Total spent",

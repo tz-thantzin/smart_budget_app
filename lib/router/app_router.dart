@@ -8,7 +8,8 @@ import '../presentation/screens/budget_screens.dart';
 import '../presentation/screens/category_screens.dart';
 import '../presentation/screens/dashboard_screen.dart';
 import '../presentation/screens/login_screen.dart';
-import '../presentation/screens/more_screens.dart';
+import '../presentation/screens/reports_analytics_screen.dart';
+import '../presentation/screens/settings_screen.dart';
 import '../presentation/screens/splash_screen.dart';
 import '../presentation/screens/transaction_screens.dart';
 import 'app_routes.dart';
@@ -70,32 +71,12 @@ GoRouter buildAppRouter() {
             BudgetDetailScreen(budget: state.extra! as BudgetEntity),
       ),
       GoRoute(
-        path: AppRoutes.savingsGoal,
-        builder: (_, _) => const SavingsGoalScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.wallet,
-        builder: (_, _) => const WalletAccountScreen(),
-      ),
-      GoRoute(
         path: AppRoutes.reports,
         builder: (_, _) => const ReportsAnalyticsScreen(),
       ),
       GoRoute(
-        path: AppRoutes.receiptScan,
-        builder: (_, _) => const ReceiptScanScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.notifications,
-        builder: (_, _) => const NotificationsScreen(),
-      ),
-      GoRoute(
         path: AppRoutes.settings,
         builder: (_, _) => const SettingsScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.profile,
-        builder: (_, _) => const ProfilePreferencesScreen(),
       ),
     ],
   );

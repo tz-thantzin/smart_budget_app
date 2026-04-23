@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'core/extensions/build_context_extensions.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'presentation/viewmodels/settings_viewmodel.dart';
@@ -29,7 +30,7 @@ class _BudgetAppState extends ConsumerState<BudgetApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp.router(
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+        onGenerateTitle: (context) => context.localization.appTitle,
         routerConfig: router,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,

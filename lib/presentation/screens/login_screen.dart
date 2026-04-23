@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../di/app_providers.dart';
-import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
@@ -14,7 +14,7 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return AppScaffold(
       title: l10n.login,
       child: Center(

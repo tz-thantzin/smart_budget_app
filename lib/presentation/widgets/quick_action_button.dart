@@ -20,8 +20,7 @@ class QuickActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18.r),
       child: Ink(
-        width: 104.w,
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: theme.cardTheme.color,
           borderRadius: BorderRadius.circular(18.r),
@@ -29,26 +28,36 @@ class QuickActionButton extends StatelessWidget {
             color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 42.w,
-              height: 42.w,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(14.r),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 40.w,
+                height: 40.w,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: Icon(icon, color: theme.colorScheme.onPrimaryContainer),
               ),
-              child: Icon(icon, color: theme.colorScheme.onPrimaryContainer),
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelLarge,
-            ),
-          ],
+              SizedBox(height: 8.h),
+              SizedBox(
+                height: 20.h,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.labelLarge,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

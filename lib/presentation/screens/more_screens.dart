@@ -4,12 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../di/app_providers.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
-import '../../l10n/app_localizations.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
 class SavingsGoalScreen extends StatelessWidget {
@@ -17,9 +17,7 @@ class SavingsGoalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _LocalizedPlaceholder(
-      title: AppLocalizations.of(context)!.savingsGoal,
-    );
+    return _LocalizedPlaceholder(title: context.localization.savingsGoal);
   }
 }
 
@@ -28,9 +26,7 @@ class WalletAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _LocalizedPlaceholder(
-      title: AppLocalizations.of(context)!.walletAccount,
-    );
+    return _LocalizedPlaceholder(title: context.localization.walletAccount);
   }
 }
 
@@ -39,7 +35,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final selectedDate = useState(DateTime.now());
     final transactions = ref.watch(getTransactionsUseCaseProvider);
 
@@ -153,9 +149,7 @@ class ReceiptScanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _LocalizedPlaceholder(
-      title: AppLocalizations.of(context)!.receiptScan,
-    );
+    return _LocalizedPlaceholder(title: context.localization.receiptScan);
   }
 }
 
@@ -164,9 +158,7 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _LocalizedPlaceholder(
-      title: AppLocalizations.of(context)!.notifications,
-    );
+    return _LocalizedPlaceholder(title: context.localization.notifications);
   }
 }
 
@@ -177,7 +169,7 @@ class SettingsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
     final settings = ref.watch(settingsViewModelProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
 
     return AppScaffold(
       title: l10n.settings,
@@ -185,7 +177,7 @@ class SettingsScreen extends HookConsumerWidget {
         data: (data) => ListView(
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
           children: [
-            _SettingsPanel(
+            _SettingsAccordionPanel(
               title: l10n.appearance,
               children: [
                 _ThemeModeTile(
@@ -209,7 +201,7 @@ class SettingsScreen extends HookConsumerWidget {
               ],
             ),
             SizedBox(height: 16.h),
-            _SettingsPanel(
+            _SettingsAccordionPanel(
               title: l10n.language,
               children: [
                 _LanguageTile(
@@ -267,7 +259,9 @@ class SettingsScreen extends HookConsumerWidget {
     if (locale == null) return;
     await ref.read(settingsViewModelProvider.notifier).setLocale(locale);
     if (!context.mounted) return;
-    _showSavedMessage(context);
+    final l10n = context.localization;
+    final language = locale.languageCode == 'my' ? l10n.myanmar : l10n.english;
+    _showSnackBarMessage(context, l10n.languageChanged(language));
   }
 
   Future<void> _saveFingerprintLogin(
@@ -275,7 +269,7 @@ class SettingsScreen extends HookConsumerWidget {
     WidgetRef ref,
     bool enabled,
   ) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final saved = await ref
         .read(settingsViewModelProvider.notifier)
         .setFingerprintLoginEnabled(
@@ -296,10 +290,7 @@ class SettingsScreen extends HookConsumerWidget {
   }
 
   void _showSavedMessage(BuildContext context) {
-    _showSnackBarMessage(
-      context,
-      AppLocalizations.of(context)!.preferencesSaved,
-    );
+    _showSnackBarMessage(context, context.localization.preferencesSaved);
   }
 
   void _showSnackBarMessage(BuildContext context, String message) {
@@ -334,6 +325,43 @@ class _SettingsPanel extends StatelessWidget {
           SizedBox(height: 8.h),
           ...children,
         ],
+      ),
+    );
+  }
+}
+
+class _SettingsAccordionPanel extends StatelessWidget {
+  const _SettingsAccordionPanel({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color,
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.45),
+        ),
+      ),
+      child: Theme(
+        data: theme.copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: true,
+          tilePadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+          childrenPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22.r),
+          ),
+          collapsedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22.r),
+          ),
+          title: Text(title, style: theme.textTheme.titleMedium),
+          children: children,
+        ),
       ),
     );
   }
@@ -395,7 +423,7 @@ class ProfilePreferencesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _LocalizedPlaceholder(
-      title: AppLocalizations.of(context)!.profilePreferences,
+      title: context.localization.profilePreferences,
     );
   }
 }
@@ -457,7 +485,7 @@ class _ReportHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -549,7 +577,7 @@ class _ReportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final borderRadius = BorderRadius.circular(20.r);
     return Material(
       color: theme.cardTheme.color,
@@ -651,7 +679,7 @@ void _showReportDetails(
 ) {
   final rows = _reportDetailRows(context, period, transactions);
   final theme = Theme.of(context);
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = context.localization;
 
   showModalBottomSheet<void>(
     context: context,
@@ -717,7 +745,7 @@ class _ReportDetailTotal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),

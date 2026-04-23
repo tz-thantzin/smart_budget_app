@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
-import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/dashboard_viewmodel.dart';
 import '../widgets/quick_action_button.dart';
@@ -17,7 +17,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboard = ref.watch(dashboardViewModelProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return AppScaffold(
       title: l10n.dashboard,
       actions: [
@@ -60,9 +60,13 @@ class DashboardScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(height: 12.h),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
+            GridView.count(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.w,
+              mainAxisSpacing: 10.h,
+              childAspectRatio: 1.02,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 QuickActionButton(
                   label: l10n.add,
@@ -200,7 +204,7 @@ class _BalanceHeader extends StatelessWidget {
           ),
           SizedBox(height: 18.h),
           Text(
-            AppLocalizations.of(context)!.totalBalance,
+            context.localization.totalBalance,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onPrimary.withValues(alpha: 0.82),
             ),

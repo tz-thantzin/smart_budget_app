@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../domain/entities/budget_entity.dart';
@@ -43,7 +44,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -152,7 +153,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         dateTime: _selectedDate,
                       );
                   if (!context.mounted) return;
-                  await _showBudgetAlertIfNeeded(context, ref, _type);
+                  await _showBudgetAlertIfNeeded(
+                    context,
+                    ref,
+                    _type,
+                    _categoryId,
+                  );
                   if (!context.mounted) return;
                   context.pop(true);
                 },
@@ -325,7 +331,7 @@ class _TransactionListTile extends StatelessWidget {
               if (onDelete != null) ...[
                 SizedBox(width: 6.w),
                 IconButton(
-                  tooltip: AppLocalizations.of(context)!.delete,
+                  tooltip: context.localization.delete,
                   onPressed: onDelete,
                   icon: const Icon(Icons.delete_outline_rounded),
                 ),
@@ -380,7 +386,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -502,7 +508,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                       .read(transactionListViewModelProvider.notifier)
                       .updateTransaction(updated);
                   if (!context.mounted) return;
-                  await _showBudgetAlertIfNeeded(context, ref, _type);
+                  await _showBudgetAlertIfNeeded(
+                    context,
+                    ref,
+                    _type,
+                    _categoryId,
+                  );
                   if (!context.mounted) return;
                   context.pop(true);
                 },
@@ -524,10 +535,10 @@ class TransactionDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppScaffold(
-      title: AppLocalizations.of(context)!.transactionDetail,
+      title: context.localization.transactionDetail,
       actions: [
         IconButton(
-          tooltip: AppLocalizations.of(context)!.edit,
+          tooltip: context.localization.edit,
           onPressed: () async {
             final changed = await context.push<bool>(
               AppRoutes.editTransaction,
@@ -542,7 +553,7 @@ class TransactionDetailScreen extends ConsumerWidget {
           icon: const Icon(Icons.edit_rounded),
         ),
         IconButton(
-          tooltip: AppLocalizations.of(context)!.delete,
+          tooltip: context.localization.delete,
           onPressed: () =>
               _deleteTransaction(context, ref, transaction.id, popCount: 1),
           icon: const Icon(Icons.delete_outline_rounded),
@@ -554,30 +565,30 @@ class TransactionDetailScreen extends ConsumerWidget {
           _FormPanel(
             children: [
               _DetailTile(
-                label: AppLocalizations.of(context)!.title,
+                label: context.localization.title,
                 value: transaction.title,
                 icon: Icons.title_rounded,
               ),
               _DetailTile(
-                label: AppLocalizations.of(context)!.amount,
+                label: context.localization.amount,
                 value: Formatters.currency(transaction.amount),
                 icon: Icons.payments_rounded,
               ),
               _DetailTile(
-                label: AppLocalizations.of(context)!.type,
+                label: context.localization.type,
                 value: _transactionTypeLabel(
-                  AppLocalizations.of(context)!,
+                  context.localization,
                   transaction.type,
                 ),
                 icon: Icons.swap_vert_rounded,
               ),
               _DetailTile(
-                label: AppLocalizations.of(context)!.date,
+                label: context.localization.date,
                 value: Formatters.date(transaction.dateTime),
                 icon: Icons.calendar_today_rounded,
               ),
               _DetailTile(
-                label: AppLocalizations.of(context)!.note,
+                label: context.localization.note,
                 value: transaction.note ?? '-',
                 icon: Icons.notes_rounded,
               ),
@@ -606,7 +617,7 @@ class _TransactionHistoryScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(transactionListViewModelProvider);
     return AppScaffold(
-      title: AppLocalizations.of(context)!.transactionHistory,
+      title: context.localization.transactionHistory,
       child: state.when(
         data: (items) {
           var filtered = items
@@ -638,7 +649,7 @@ class _TransactionHistoryScreenState
                       alignment: Alignment.centerLeft,
                       child: FilterChip(
                         avatar: Icon(Icons.filter_alt_rounded, size: 18.sp),
-                        label: Text(AppLocalizations.of(context)!.expenseOnly),
+                        label: Text(context.localization.expenseOnly),
                         selected: onlyExpense,
                         onSelected: (v) => setState(() => onlyExpense = v),
                       ),
@@ -688,17 +699,17 @@ Future<void> _deleteTransaction(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(AppLocalizations.of(context)!.deleteTransactionQuestion),
-      content: Text(AppLocalizations.of(context)!.deleteTransactionMessage),
+      title: Text(context.localization.deleteTransactionQuestion),
+      content: Text(context.localization.deleteTransactionMessage),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(context.localization.cancel),
         ),
         FilledButton.icon(
           onPressed: () => Navigator.pop(dialogContext, true),
           icon: const Icon(Icons.delete_outline_rounded),
-          label: Text(AppLocalizations.of(context)!.delete),
+          label: Text(context.localization.delete),
         ),
       ],
     ),
@@ -720,11 +731,12 @@ Future<void> _showBudgetAlertIfNeeded(
   BuildContext context,
   WidgetRef ref,
   TransactionType transactionType,
+  String? categoryId,
 ) async {
   if (transactionType != TransactionType.expense) return;
 
   final budgets = await ref.refresh(budgetViewModelProvider.future);
-  final alertBudget = _budgetNeedingAlert(budgets);
+  final alertBudget = _budgetNeedingAlert(budgets, categoryId);
   if (alertBudget == null || !context.mounted) return;
 
   await _playBudgetAlertFeedback();
@@ -732,7 +744,7 @@ Future<void> _showBudgetAlertIfNeeded(
 
   final usagePercent = (alertBudget.usagePercent * 100).clamp(0, 999).round();
   final isOverBudget = alertBudget.usagePercent >= 1;
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = context.localization;
   await showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -782,18 +794,28 @@ Future<void> _playBudgetAlertFeedback() async {
   await HapticFeedback.vibrate();
 }
 
-BudgetEntity? _budgetNeedingAlert(List<BudgetEntity> budgets) {
+BudgetEntity? _budgetNeedingAlert(
+  List<BudgetEntity> budgets,
+  String? categoryId,
+) {
   final matchingBudgets =
       budgets
           .where(
             (budget) =>
                 budget.amountLimit > 0 &&
+                _budgetMatchesCategory(budget, categoryId) &&
                 budget.usagePercent >= budget.alertThresholdPercent,
           )
           .toList()
         ..sort((a, b) => b.usagePercent.compareTo(a.usagePercent));
 
   return matchingBudgets.isEmpty ? null : matchingBudgets.first;
+}
+
+bool _budgetMatchesCategory(BudgetEntity budget, String? categoryId) {
+  final budgetCategoryId = budget.categoryId;
+  if (budgetCategoryId == null || budgetCategoryId.isEmpty) return true;
+  return budgetCategoryId == categoryId;
 }
 
 String _transactionTypeLabel(AppLocalizations l10n, TransactionType type) {

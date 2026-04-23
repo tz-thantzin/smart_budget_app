@@ -42,6 +42,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preferencesSaved => 'Preferences saved';
 
   @override
+  String languageChanged(Object language) {
+    return 'Language changed to $language.';
+  }
+
+  @override
   String get dashboard => 'Dashboard';
 
   @override

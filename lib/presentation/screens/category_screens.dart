@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
@@ -16,7 +17,7 @@ class CategoriesManagementScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categories = ref.watch(categoryViewModelProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return AppScaffold(
       title: l10n.categories,
       floatingActionButton: FloatingActionButton.extended(
@@ -85,7 +86,7 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     return AppScaffold(
       title: isEditing ? l10n.editCategory : l10n.addCategory,
       actions: [
@@ -193,7 +194,7 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final color = Color(category.colorHex);
     final icon = IconData(category.iconCodePoint, fontFamily: 'MaterialIcons');
     return Container(
@@ -268,7 +269,7 @@ Future<void> _confirmDeleteCategory(
   String id, {
   required bool popAfterDelete,
 }) async {
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = context.localization;
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(

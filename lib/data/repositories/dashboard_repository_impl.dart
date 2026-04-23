@@ -41,7 +41,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
       totalIncome: totalIncome,
       totalExpense: totalExpense,
       budgets: await _databaseDataSource.fetchBudgets(),
-      recentTransactions: transactions.take(5).toList(),
+      recentTransactions: transactions.take(3).toList(),
       topSpendingCategories: topSpendingCategories,
       savingsGoals: _dataSource.savingsGoals,
     );

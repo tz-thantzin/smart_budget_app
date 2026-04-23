@@ -21,12 +21,14 @@ class BudgetViewModel extends AsyncNotifier<List<BudgetEntity>> {
     required String title,
     required double amountLimit,
     required BudgetPeriodType periodType,
+    String? categoryId,
   }) async {
     final now = DateTime.now();
     final budget = BudgetEntity(
       id: now.microsecondsSinceEpoch.toString(),
       title: title,
       amountLimit: amountLimit,
+      categoryId: categoryId,
       periodType: periodType,
       startDate: now,
       endDate: now.add(const Duration(days: 30)),

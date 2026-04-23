@@ -3,13 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../domain/entities/budget_entity.dart';
+import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/budget_viewmodel.dart';
+import '../viewmodels/category_viewmodel.dart';
 
 class BudgetListScreen extends ConsumerWidget {
   const BudgetListScreen({super.key});
@@ -17,7 +20,10 @@ class BudgetListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final budgets = ref.watch(budgetViewModelProvider);
-    final l10n = AppLocalizations.of(context)!;
+    final categories = ref
+        .watch(categoryViewModelProvider)
+        .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
+    final l10n = context.localization;
     return AppScaffold(
       title: l10n.budgets,
       floatingActionButton: FloatingActionButton.extended(
@@ -43,6 +49,7 @@ class BudgetListScreen extends ConsumerWidget {
                   percent: e.usagePercent.clamp(0, 1).toDouble(),
                   spentLabel: l10n.spent,
                   limitLabel: l10n.limit,
+                  category: _categoryLabel(l10n, categories, e.categoryId),
                   onTap: () async {
                     final changed = await context.push<bool>(
                       AppRoutes.budgetDetail,
@@ -79,6 +86,7 @@ class _CreateEditBudgetScreenState
   late final TextEditingController titleCtrl;
   late final TextEditingController amountCtrl;
   late BudgetPeriodType period;
+  String? categoryId;
 
   bool get isEditing => widget.budget != null;
 
@@ -90,6 +98,7 @@ class _CreateEditBudgetScreenState
       text: widget.budget?.amountLimit.toStringAsFixed(2) ?? '',
     );
     period = widget.budget?.periodType ?? BudgetPeriodType.monthly;
+    categoryId = widget.budget?.categoryId;
   }
 
   @override
@@ -101,7 +110,14 @@ class _CreateEditBudgetScreenState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
+    final categories = ref
+        .watch(categoryViewModelProvider)
+        .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
+    if (categoryId != null &&
+        !categories.any((category) => category.id == categoryId)) {
+      categoryId = null;
+    }
     return AppScaffold(
       title: l10n.saveBudget,
       actions: [
@@ -155,6 +171,14 @@ class _CreateEditBudgetScreenState
                     .toList(),
                 onChanged: (v) => setState(() => period = v ?? period),
               ),
+              SizedBox(height: 12.h),
+              _BudgetCategoryDropdown(
+                label: l10n.categoryOptional,
+                categories: categories,
+                value: categoryId,
+                noneLabel: l10n.noCategory,
+                onChanged: (value) => setState(() => categoryId = value),
+              ),
               SizedBox(height: 18.h),
               FilledButton.icon(
                 onPressed: () async {
@@ -172,6 +196,7 @@ class _CreateEditBudgetScreenState
                           budget.copyWith(
                             title: title,
                             amountLimit: amount,
+                            categoryId: categoryId,
                             periodType: period,
                           ),
                         );
@@ -182,6 +207,7 @@ class _CreateEditBudgetScreenState
                           title: title,
                           amountLimit: amount,
                           periodType: period,
+                          categoryId: categoryId,
                         );
                   }
                   if (!context.mounted) return;
@@ -207,6 +233,7 @@ class _BudgetCard extends StatelessWidget {
     required this.percent,
     required this.spentLabel,
     required this.limitLabel,
+    required this.category,
     required this.onTap,
     required this.onDelete,
   });
@@ -218,6 +245,7 @@ class _BudgetCard extends StatelessWidget {
   final double percent;
   final String spentLabel;
   final String limitLabel;
+  final String category;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -256,10 +284,21 @@ class _BudgetCard extends StatelessWidget {
                     Expanded(
                       child: Text(title, style: theme.textTheme.titleMedium),
                     ),
-                    Text(period, style: theme.textTheme.bodySmall),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(period, style: theme.textTheme.bodySmall),
+                        Text(
+                          category,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(width: 4.w),
                     IconButton(
-                      tooltip: AppLocalizations.of(context)!.delete,
+                      tooltip: context.localization.delete,
                       onPressed: onDelete,
                       icon: const Icon(Icons.delete_outline_rounded),
                     ),
@@ -286,6 +325,45 @@ class _BudgetCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _BudgetCategoryDropdown extends StatelessWidget {
+  const _BudgetCategoryDropdown({
+    required this.label,
+    required this.categories,
+    required this.value,
+    required this.noneLabel,
+    required this.onChanged,
+  });
+
+  final String label;
+  final List<CategoryEntity> categories;
+  final String? value;
+  final String noneLabel;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String?>(
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: const Icon(Icons.category_rounded),
+      ),
+      items: [
+        DropdownMenuItem<String?>(value: null, child: Text(noneLabel)),
+        ...categories
+            .where((category) => category.type == TransactionType.expense)
+            .map(
+              (category) => DropdownMenuItem<String?>(
+                value: category.id,
+                child: Text(category.name),
+              ),
+            ),
+      ],
+      onChanged: onChanged,
     );
   }
 }
@@ -321,7 +399,10 @@ class BudgetDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
+    final categories = ref
+        .watch(categoryViewModelProvider)
+        .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
     return AppScaffold(
       title: l10n.budgetDetail,
       actions: [
@@ -363,6 +444,15 @@ class BudgetDetailScreen extends ConsumerWidget {
               ),
               ListTile(
                 leading: const CircleAvatar(
+                  child: Icon(Icons.category_rounded),
+                ),
+                title: Text(l10n.categoryOptional),
+                subtitle: Text(
+                  _categoryLabel(l10n, categories, budget.categoryId),
+                ),
+              ),
+              ListTile(
+                leading: const CircleAvatar(
                   child: Icon(Icons.date_range_rounded),
                 ),
                 title: Text(l10n.period),
@@ -388,13 +478,25 @@ class BudgetDetailScreen extends ConsumerWidget {
   }
 }
 
+String _categoryLabel(
+  AppLocalizations l10n,
+  List<CategoryEntity> categories,
+  String? categoryId,
+) {
+  if (categoryId == null || categoryId.isEmpty) return l10n.noCategory;
+  for (final category in categories) {
+    if (category.id == categoryId) return category.name;
+  }
+  return l10n.noCategory;
+}
+
 Future<void> _confirmDeleteBudget(
   BuildContext context,
   WidgetRef ref,
   String id, {
   bool popAfterDelete = false,
 }) async {
-  final l10n = AppLocalizations.of(context)!;
+  final l10n = context.localization;
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(

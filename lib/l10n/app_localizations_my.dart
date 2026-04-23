@@ -33,13 +33,18 @@ class AppLocalizationsMy extends AppLocalizations {
   String get language => 'ဘာသာစကား';
 
   @override
-  String get english => 'အင်္ဂလိပ်';
+  String get english => 'English';
 
   @override
   String get myanmar => 'မြန်မာ';
 
   @override
   String get preferencesSaved => 'ဆက်တင်များ သိမ်းပြီးပါပြီ';
+
+  @override
+  String languageChanged(Object language) {
+    return '$language ဘာသာစကား သို့ ပြောင်းပြီးပါပြီ။';
+  }
 
   @override
   String get dashboard => 'ဒက်ရှ်ဘုတ်';

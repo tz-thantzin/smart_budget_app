@@ -11,6 +11,12 @@
   "english": "English",
   "myanmar": "Myanmar",
   "preferencesSaved": "Preferences saved",
+  "languageChanged": "Language changed to {language}.",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {}
+    }
+  },
   "dashboard": "Dashboard",
   "totalBalance": "Total balance",
   "income": "Income",

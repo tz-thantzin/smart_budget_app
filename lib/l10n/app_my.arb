@@ -8,9 +8,15 @@
   "lightMode": "အလင်း မုဒ်",
   "darkMode": "အမှောင် မုဒ်",
   "language": "ဘာသာစကား",
-  "english": "အင်္ဂလိပ်",
+  "english": "English",
   "myanmar": "မြန်မာ",
   "preferencesSaved": "ဆက်တင်များ သိမ်းပြီးပါပြီ",
+  "languageChanged": "{language} ဘာသာစကား သို့ ပြောင်းပြီးပါပြီ။",
+  "@languageChanged": {
+    "placeholders": {
+      "language": {}
+    }
+  },
   "dashboard": "ဒက်ရှ်ဘုတ်",
   "totalBalance": "စုစုပေါင်း လက်ကျန်ငွေ",
   "income": "ဝင်ငွေ",

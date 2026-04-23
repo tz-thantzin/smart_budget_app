@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Preferences saved'**
   String get preferencesSaved;
 
+  /// No description provided for @languageChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Language changed to {language}.'**
+  String languageChanged(Object language);
+
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:

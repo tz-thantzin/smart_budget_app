@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/extensions/build_context_extensions.dart';
 import '../../di/app_providers.dart';
-import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/settings_viewmodel.dart';
 
@@ -47,7 +47,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return;
     }
 
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.localization;
     final authenticated = await ref
         .read(biometricAuthServiceProvider)
         .authenticate(l10n.fingerprintAuthReason);

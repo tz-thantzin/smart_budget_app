@@ -1,5 +1,7 @@
 import 'enums.dart';
 
+const _unsetCategoryId = Object();
+
 class BudgetEntity {
   const BudgetEntity({
     required this.id,
@@ -31,7 +33,7 @@ class BudgetEntity {
     String? id,
     String? title,
     double? amountLimit,
-    String? categoryId,
+    Object? categoryId = _unsetCategoryId,
     BudgetPeriodType? periodType,
     DateTime? startDate,
     DateTime? endDate,
@@ -43,7 +45,9 @@ class BudgetEntity {
       id: id ?? this.id,
       title: title ?? this.title,
       amountLimit: amountLimit ?? this.amountLimit,
-      categoryId: categoryId ?? this.categoryId,
+      categoryId: categoryId == _unsetCategoryId
+          ? this.categoryId
+          : categoryId as String?,
       periodType: periodType ?? this.periodType,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,

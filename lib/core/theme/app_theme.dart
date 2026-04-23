@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
@@ -23,32 +24,32 @@ class AppTheme {
         .apply(bodyColor: defaultTextColor, displayColor: defaultTextColor)
         .copyWith(
           headlineLarge: GoogleFonts.inter(
-            fontSize: 30,
+            fontSize: 30.sp,
             fontWeight: FontWeight.w800,
             color: defaultTextColor,
           ),
           titleLarge: GoogleFonts.inter(
-            fontSize: 22,
+            fontSize: 22.sp,
             fontWeight: FontWeight.w700,
             color: defaultTextColor,
           ),
           titleMedium: GoogleFonts.inter(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w700,
             color: defaultTextColor,
           ),
           bodyLarge: GoogleFonts.inter(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w400,
             color: defaultTextColor,
           ),
           bodySmall: GoogleFonts.inter(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w400,
             color: defaultTextColor,
           ),
           labelLarge: GoogleFonts.inter(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: defaultTextColor,
           ),

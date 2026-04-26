@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
+import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
@@ -120,21 +121,20 @@ class _AddEditCategoryScreenState extends ConsumerState<AddEditCategoryScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              DropdownButtonFormField<TransactionType>(
-                initialValue: type,
-                decoration: InputDecoration(
-                  labelText: l10n.type,
-                  prefixIcon: const Icon(Icons.swap_vert_rounded),
-                ),
-                items: TransactionType.values
+              AppSelectionField<TransactionType>(
+                label: l10n.type,
+                title: l10n.type,
+                selectedValue: type,
+                prefixIcon: const Icon(Icons.swap_vert_rounded),
+                options: TransactionType.values
                     .map(
-                      (value) => DropdownMenuItem(
+                      (value) => AppSelectionOption(
                         value: value,
-                        child: Text(_transactionTypeLabel(l10n, value)),
+                        label: _transactionTypeLabel(l10n, value),
                       ),
                     )
                     .toList(),
-                onChanged: (v) => setState(() => type = v ?? type),
+                onSelected: (value) => setState(() => type = value),
               ),
               SizedBox(height: 18.h),
               FilledButton.icon(

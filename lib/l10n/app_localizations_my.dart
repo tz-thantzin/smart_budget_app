@@ -140,7 +140,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get categoryName => 'အမျိုးအစား အမည်';
 
   @override
-  String get type => 'အမျိုးအစား';
+  String get type => 'ပုံစံ';
 
   @override
   String get saveCategory => 'အမျိုးအစား သိမ်းရန်';
@@ -179,7 +179,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get amount => 'ပမာဏ';
 
   @override
-  String get categoryOptional => 'အမျိုးအစား (မဖြစ်မနေ မဟုတ်)';
+  String get categoryOptional => 'အမျိုးအစား (ရွေးချယ်နိုင်သည်)';
 
   @override
   String get noCategory => 'အမျိုးအစား မရှိ';

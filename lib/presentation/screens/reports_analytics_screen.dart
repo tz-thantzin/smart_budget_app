@@ -316,22 +316,29 @@ class _ReportCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 10.w),
-              Flexible(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    Formatters.currency(period.amount),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.error,
+              SizedBox(
+                width: 118.w,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          Formatters.currency(period.amount),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 6.w),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 6.w),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: theme.colorScheme.onSurfaceVariant,
               ),
             ],
           ),

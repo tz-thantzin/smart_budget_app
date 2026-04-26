@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
+import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../domain/entities/budget_entity.dart';
@@ -160,16 +161,18 @@ class _CreateEditBudgetScreenState
                 ),
               ),
               SizedBox(height: 12.h),
-              DropdownButtonFormField<BudgetPeriodType>(
-                initialValue: period,
-                decoration: InputDecoration(
-                  labelText: l10n.period,
-                  prefixIcon: Icon(Icons.date_range_rounded),
-                ),
-                items: BudgetPeriodType.values
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+              AppSelectionField<BudgetPeriodType>(
+                label: l10n.period,
+                title: l10n.period,
+                selectedValue: period,
+                prefixIcon: const Icon(Icons.date_range_rounded),
+                options: BudgetPeriodType.values
+                    .map(
+                      (value) =>
+                          AppSelectionOption(value: value, label: value.name),
+                    )
                     .toList(),
-                onChanged: (v) => setState(() => period = v ?? period),
+                onSelected: (value) => setState(() => period = value),
               ),
               SizedBox(height: 12.h),
               _BudgetCategoryDropdown(
@@ -346,24 +349,23 @@ class _BudgetCategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String?>(
-      initialValue: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const Icon(Icons.category_rounded),
-      ),
-      items: [
-        DropdownMenuItem<String?>(value: null, child: Text(noneLabel)),
+    return AppSelectionField<String?>(
+      label: label,
+      title: label,
+      selectedValue: value,
+      prefixIcon: const Icon(Icons.category_rounded),
+      options: [
+        AppSelectionOption<String?>(value: null, label: noneLabel),
         ...categories
             .where((category) => category.type == TransactionType.expense)
             .map(
-              (category) => DropdownMenuItem<String?>(
+              (category) => AppSelectionOption<String?>(
                 value: category.id,
-                child: Text(category.name),
+                label: category.name,
               ),
             ),
       ],
-      onChanged: onChanged,
+      onSelected: onChanged,
     );
   }
 }

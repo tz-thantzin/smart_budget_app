@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
+import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../domain/entities/budget_entity.dart';
@@ -100,22 +101,21 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 },
               ),
               SizedBox(height: 12.h),
-              DropdownButtonFormField<TransactionType>(
-                initialValue: _type,
-                decoration: InputDecoration(
-                  labelText: l10n.type,
-                  prefixIcon: Icon(Icons.swap_vert_rounded),
-                ),
-                items: TransactionType.values
+              AppSelectionField<TransactionType>(
+                label: l10n.type,
+                title: l10n.type,
+                selectedValue: _type,
+                prefixIcon: const Icon(Icons.swap_vert_rounded),
+                options: TransactionType.values
                     .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(_transactionTypeLabel(l10n, e)),
+                      (value) => AppSelectionOption(
+                        value: value,
+                        label: _transactionTypeLabel(l10n, value),
                       ),
                     )
                     .toList(),
-                onChanged: (val) => setState(() {
-                  _type = val ?? _type;
+                onSelected: (value) => setState(() {
+                  _type = value;
                   _categoryId = null;
                 }),
               ),
@@ -236,22 +236,21 @@ class _CategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String?>(
-      initialValue: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const Icon(Icons.category_rounded),
-      ),
-      items: [
-        DropdownMenuItem<String?>(value: null, child: Text(noneLabel)),
+    return AppSelectionField<String?>(
+      label: label,
+      title: label,
+      selectedValue: value,
+      prefixIcon: const Icon(Icons.category_rounded),
+      options: [
+        AppSelectionOption<String?>(value: null, label: noneLabel),
         ...categories.map(
-          (category) => DropdownMenuItem<String?>(
+          (category) => AppSelectionOption<String?>(
             value: category.id,
-            child: Text(category.name),
+            label: category.name,
           ),
         ),
       ],
-      onChanged: onChanged,
+      onSelected: onChanged,
     );
   }
 }
@@ -288,6 +287,7 @@ class _TransactionListTile extends StatelessWidget {
     required this.title,
     required this.type,
     required this.amount,
+    required this.dateLabel,
     this.onDelete,
     this.onTap,
   });
@@ -295,6 +295,7 @@ class _TransactionListTile extends StatelessWidget {
   final String title;
   final TransactionType type;
   final String amount;
+  final String dateLabel;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
 
@@ -318,7 +319,7 @@ class _TransactionListTile extends StatelessWidget {
             ),
           ),
           title: Text(title),
-          subtitle: Text(type.name),
+          subtitle: Text('$dateLabel • ${type.name}'),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -440,22 +441,21 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              DropdownButtonFormField<TransactionType>(
-                initialValue: _type,
-                decoration: InputDecoration(
-                  labelText: l10n.type,
-                  prefixIcon: Icon(Icons.swap_vert_rounded),
-                ),
-                items: TransactionType.values
+              AppSelectionField<TransactionType>(
+                label: l10n.type,
+                title: l10n.type,
+                selectedValue: _type,
+                prefixIcon: const Icon(Icons.swap_vert_rounded),
+                options: TransactionType.values
                     .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(_transactionTypeLabel(l10n, e)),
+                      (value) => AppSelectionOption(
+                        value: value,
+                        label: _transactionTypeLabel(l10n, value),
                       ),
                     )
                     .toList(),
-                onChanged: (val) => setState(() {
-                  _type = val ?? _type;
+                onSelected: (value) => setState(() {
+                  _type = value;
                   _categoryId = null;
                 }),
               ),
@@ -612,6 +612,7 @@ class _TransactionHistoryScreenState
     extends ConsumerState<TransactionHistoryScreen> {
   String query = '';
   bool onlyExpense = false;
+  DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -628,7 +629,12 @@ class _TransactionHistoryScreenState
                 .where((e) => e.type == TransactionType.expense)
                 .toList();
           }
-          filtered.sort((a, b) => b.amount.compareTo(a.amount));
+          if (selectedDate != null) {
+            filtered = filtered
+                .where((e) => _isSameCalendarDate(e.dateTime, selectedDate!))
+                .toList();
+          }
+          filtered.sort((a, b) => b.dateTime.compareTo(a.dateTime));
           return Column(
             children: [
               Padding(
@@ -645,40 +651,74 @@ class _TransactionHistoryScreenState
                       onChanged: (v) => setState(() => query = v),
                     ),
                     SizedBox(height: 10.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: FilterChip(
-                        avatar: Icon(Icons.filter_alt_rounded, size: 18.sp),
-                        label: Text(context.localization.expenseOnly),
-                        selected: onlyExpense,
-                        onSelected: (v) => setState(() => onlyExpense = v),
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _HistoryDateFilterField(
+                            label: context.localization.date,
+                            value: selectedDate,
+                            onTap: () async {
+                              final picked = await _pickTransactionDate(
+                                context,
+                                selectedDate ?? DateTime.now(),
+                              );
+                              if (picked != null) {
+                                setState(() => selectedDate = picked);
+                              }
+                            },
+                            onClear: selectedDate == null
+                                ? null
+                                : () => setState(() => selectedDate = null),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        FilterChip(
+                          avatar: Icon(Icons.filter_alt_rounded, size: 18.sp),
+                          label: Text(context.localization.expenseOnly),
+                          selected: onlyExpense,
+                          onSelected: (v) => setState(() => onlyExpense = v),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) {
-                    final txn = filtered[index];
-                    return _TransactionListTile(
-                      title: txn.title,
-                      type: txn.type,
-                      amount: Formatters.currency(txn.amount),
-                      onTap: () async {
-                        final changed = await context.push<bool>(
-                          AppRoutes.editTransaction,
-                          extra: txn,
-                        );
-                        if (changed == true) {
-                          ref.invalidate(transactionListViewModelProvider);
-                        }
-                      },
-                      onDelete: () => _deleteTransaction(context, ref, txn.id),
-                    );
-                  },
-                ),
+                child: filtered.isEmpty
+                    ? Center(
+                        child: Text(
+                          selectedDate == null
+                              ? 'No transactions found'
+                              : 'No transactions on ${Formatters.date(selectedDate!)}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          final txn = filtered[index];
+                          return _TransactionListTile(
+                            title: txn.title,
+                            type: txn.type,
+                            amount: Formatters.currency(txn.amount),
+                            dateLabel: Formatters.date(txn.dateTime),
+                            onTap: () async {
+                              final changed = await context.push<bool>(
+                                AppRoutes.editTransaction,
+                                extra: txn,
+                              );
+                              if (changed == true) {
+                                ref.invalidate(
+                                  transactionListViewModelProvider,
+                                );
+                              }
+                            },
+                            onDelete: () =>
+                                _deleteTransaction(context, ref, txn.id),
+                          );
+                        },
+                      ),
               ),
             ],
           );
@@ -688,6 +728,48 @@ class _TransactionHistoryScreenState
       ),
     );
   }
+}
+
+class _HistoryDateFilterField extends StatelessWidget {
+  const _HistoryDateFilterField({
+    required this.label,
+    required this.value,
+    required this.onTap,
+    this.onClear,
+  });
+
+  final String label;
+  final DateTime? value;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.calendar_today_rounded),
+          suffixIcon: onClear == null
+              ? const Icon(Icons.expand_more_rounded)
+              : IconButton(
+                  tooltip: context.localization.cancel,
+                  onPressed: onClear,
+                  icon: const Icon(Icons.close_rounded),
+                ),
+        ),
+        child: Text(value == null ? 'All dates' : Formatters.date(value!)),
+      ),
+    );
+  }
+}
+
+bool _isSameCalendarDate(DateTime left, DateTime right) {
+  return left.year == right.year &&
+      left.month == right.month &&
+      left.day == right.day;
 }
 
 Future<void> _deleteTransaction(

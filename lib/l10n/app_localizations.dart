@@ -667,6 +667,72 @@ abstract class AppLocalizations {
   /// **'Selected date'**
   String get selectedDateLabel;
 
+  /// No description provided for @exportExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Excel'**
+  String get exportExcel;
+
+  /// No description provided for @exportingExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting Excel...'**
+  String get exportingExcel;
+
+  /// No description provided for @excelExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Excel file is ready to share.'**
+  String get excelExported;
+
+  /// No description provided for @excelExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t export Excel file.'**
+  String get excelExportFailed;
+
+  /// No description provided for @reportSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get reportSummary;
+
+  /// No description provided for @reportTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get reportTransactions;
+
+  /// No description provided for @generatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated at'**
+  String get generatedAt;
+
+  /// No description provided for @transactionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction count'**
+  String get transactionCount;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @unknownCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get unknownCategory;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
   /// No description provided for @week.
   ///
   /// In en, this message translates to:

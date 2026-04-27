@@ -312,6 +312,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectedDateLabel => 'Selected date';
 
   @override
+  String get exportExcel => 'Export Excel';
+
+  @override
+  String get exportingExcel => 'Exporting Excel...';
+
+  @override
+  String get excelExported => 'Excel file is ready to share.';
+
+  @override
+  String get excelExportFailed => 'Couldn\'t export Excel file.';
+
+  @override
+  String get reportSummary => 'Summary';
+
+  @override
+  String get reportTransactions => 'Transactions';
+
+  @override
+  String get generatedAt => 'Generated at';
+
+  @override
+  String get transactionCount => 'Transaction count';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get unknownCategory => 'Uncategorized';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
   String get week => 'Week';
 
   @override

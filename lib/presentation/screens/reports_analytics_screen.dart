@@ -5,9 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
+import '../../core/services/report_excel_export_service.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../di/app_providers.dart';
+import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
 
@@ -18,14 +20,32 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
     final selectedDate = useState(DateTime.now());
-    final transactions = ref.watch(getTransactionsUseCaseProvider);
+    final exportingKey = useState<String?>(null);
+    final transactionsUseCase = ref.watch(getTransactionsUseCaseProvider);
+    final categoriesUseCase = ref.watch(getCategoriesUseCaseProvider);
+    final exportService = useMemoized(() => const ReportExcelExportService());
+    final reportDataFuture = useMemoized(
+      () => Future.wait<Object>([
+        transactionsUseCase.call(),
+        categoriesUseCase.call(),
+      ]),
+      [transactionsUseCase, categoriesUseCase],
+    );
 
     return AppScaffold(
       title: l10n.reports,
-      child: FutureBuilder<List<TransactionEntity>>(
-        future: transactions.call(),
+      child: FutureBuilder<List<Object>>(
+        future: reportDataFuture,
         builder: (context, snapshot) {
-          final items = snapshot.data ?? const <TransactionEntity>[];
+          final items = snapshot.hasData
+              ? snapshot.data![0] as List<TransactionEntity>
+              : const <TransactionEntity>[];
+          final categories = snapshot.hasData
+              ? snapshot.data![1] as List<CategoryEntity>
+              : const <CategoryEntity>[];
+          final categoryNames = {
+            for (final category in categories) category.id: category.name,
+          };
           final now = DateTime.now();
           final selected = _dateOnly(selectedDate.value);
           final weekStart = selected.subtract(
@@ -46,6 +66,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
               startDate: selected,
               endDate: selected,
               detailType: _ReportDetailType.transactions,
+              exportKey: 'selected-date',
             ),
             _ReportPeriod(
               title: l10n.week,
@@ -58,6 +79,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
               startDate: weekStart,
               endDate: weekEnd,
               detailType: _ReportDetailType.dailyTotals,
+              exportKey: 'week',
             ),
             _ReportPeriod(
               title: l10n.month,
@@ -69,6 +91,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
               startDate: monthStart,
               endDate: monthEnd,
               detailType: _ReportDetailType.weeklyTotals,
+              exportKey: 'month',
             ),
             _ReportPeriod(
               title: l10n.year,
@@ -78,6 +101,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
               startDate: yearStart,
               endDate: yearEnd,
               detailType: _ReportDetailType.monthlyTotals,
+              exportKey: 'year',
             ),
           ];
 
@@ -111,7 +135,19 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
                   padding: EdgeInsets.only(bottom: 12.h),
                   child: _ReportCard(
                     period: period,
+                    isExporting: exportingKey.value == period.exportKey,
                     onTap: () => _showReportDetails(context, period, items),
+                    onExport:
+                        snapshot.connectionState == ConnectionState.waiting
+                        ? null
+                        : () => _exportPeriodReport(
+                            context: context,
+                            period: period,
+                            allTransactions: items,
+                            categoryNames: categoryNames,
+                            exportService: exportService,
+                            exportingKey: exportingKey,
+                          ),
                   ),
                 ),
               ),
@@ -122,6 +158,71 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
         },
       ),
     );
+  }
+
+  Future<void> _exportPeriodReport({
+    required BuildContext context,
+    required _ReportPeriod period,
+    required List<TransactionEntity> allTransactions,
+    required Map<String, String> categoryNames,
+    required ReportExcelExportService exportService,
+    required ValueNotifier<String?> exportingKey,
+  }) async {
+    final l10n = context.localization;
+    final messenger = ScaffoldMessenger.of(context);
+
+    exportingKey.value = period.exportKey;
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(l10n.exportingExcel)));
+
+    try {
+      await exportService.exportExpenseReport(
+        reportTitle: l10n.expenseReport,
+        periodTitle: period.title,
+        periodSubtitle: period.subtitle,
+        startDate: period.startDate,
+        endDate: period.endDate,
+        localeTag: Localizations.localeOf(context).toLanguageTag(),
+        transactions: allTransactions,
+        categoryNames: categoryNames,
+        strings: ReportExcelExportStrings(
+          summarySheetName: l10n.reportSummary,
+          transactionsSheetName: l10n.reportTransactions,
+          periodLabel: l10n.period,
+          generatedAtLabel: l10n.generatedAt,
+          totalSpentLabel: l10n.totalSpent,
+          transactionCountLabel: l10n.transactionCount,
+          dateLabel: l10n.date,
+          titleLabel: l10n.title,
+          categoryLabel: l10n.category,
+          noteLabel: l10n.note,
+          amountLabel: l10n.amount,
+          currencyLabel: l10n.currency,
+          typeLabel: l10n.type,
+          unknownCategoryLabel: l10n.unknownCategory,
+          expenseLabel: l10n.expense,
+          incomeLabel: l10n.income,
+        ),
+      );
+
+      if (!context.mounted) {
+        return;
+      }
+
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.excelExported)));
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.excelExportFailed)));
+    } finally {
+      exportingKey.value = null;
+    }
   }
 }
 
@@ -141,6 +242,7 @@ class _ReportPeriod {
     required this.startDate,
     required this.endDate,
     required this.detailType,
+    required this.exportKey,
   });
 
   final String title;
@@ -150,6 +252,7 @@ class _ReportPeriod {
   final DateTime startDate;
   final DateTime endDate;
   final _ReportDetailType detailType;
+  final String exportKey;
 }
 
 class _ReportHero extends StatelessWidget {
@@ -252,10 +355,17 @@ class _ReportHero extends StatelessWidget {
 }
 
 class _ReportCard extends StatelessWidget {
-  const _ReportCard({required this.period, required this.onTap});
+  const _ReportCard({
+    required this.period,
+    required this.onTap,
+    required this.isExporting,
+    required this.onExport,
+  });
 
   final _ReportPeriod period;
   final VoidCallback onTap;
+  final bool isExporting;
+  final VoidCallback? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +427,7 @@ class _ReportCard extends StatelessWidget {
               ),
               SizedBox(width: 10.w),
               SizedBox(
-                width: 118.w,
+                width: 146.w,
                 child: Row(
                   children: [
                     Expanded(
@@ -332,7 +442,20 @@ class _ReportCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 6.w),
+                    SizedBox(width: 4.w),
+                    if (isExporting)
+                      SizedBox(
+                        width: 20.w,
+                        height: 20.w,
+                        child: CircularProgressIndicator(strokeWidth: 2.w),
+                      )
+                    else
+                      IconButton(
+                        onPressed: onExport,
+                        tooltip: l10n.exportExcel,
+                        icon: const Icon(Icons.table_view_rounded),
+                        visualDensity: VisualDensity.compact,
+                      ),
                     Icon(
                       Icons.chevron_right_rounded,
                       color: theme.colorScheme.onSurfaceVariant,

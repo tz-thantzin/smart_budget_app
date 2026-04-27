@@ -310,6 +310,39 @@ class AppLocalizationsMy extends AppLocalizations {
   String get selectedDateLabel => 'ရွေးထားသော ရက်စွဲ';
 
   @override
+  String get exportExcel => 'Excel ထုတ်မည်';
+
+  @override
+  String get exportingExcel => 'Excel ထုတ်နေသည်...';
+
+  @override
+  String get excelExported => 'Excel ဖိုင်ကို မျှဝေရန် အဆင်သင့် ဖြစ်ပါသည်။';
+
+  @override
+  String get excelExportFailed => 'Excel ဖိုင် မထုတ်နိုင်ပါ။';
+
+  @override
+  String get reportSummary => 'အကျဉ်းချုပ်';
+
+  @override
+  String get reportTransactions => 'ငွေလွှဲများ';
+
+  @override
+  String get generatedAt => 'ထုတ်လုပ်သည့် အချိန်';
+
+  @override
+  String get transactionCount => 'ငွေလွှဲ အရေအတွက်';
+
+  @override
+  String get category => 'အမျိုးအစား';
+
+  @override
+  String get unknownCategory => 'အမျိုးအစား မသတ်မှတ်ရသေး';
+
+  @override
+  String get currency => 'ငွေကြေး';
+
+  @override
   String get week => 'အပတ်';
 
   @override

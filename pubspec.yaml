@@ -26,6 +26,9 @@ dependencies:
   flutter_hooks: ^0.21.3+1
   hooks_riverpod: ^3.0.3
   vibration: ^3.1.8
+  excel: ^4.0.6
+  share_plus: ^13.1.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

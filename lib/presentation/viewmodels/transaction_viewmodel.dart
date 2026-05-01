@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/app_constants.dart';
 import '../../di/app_providers.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
 import 'budget_viewmodel.dart';
 import 'dashboard_viewmodel.dart';
+import 'settings_viewmodel.dart';
 
 final transactionListViewModelProvider =
     AsyncNotifierProvider<TransactionListViewModel, List<TransactionEntity>>(
@@ -28,6 +30,7 @@ class TransactionListViewModel extends AsyncNotifier<List<TransactionEntity>> {
   }) async {
     final now = DateTime.now();
     final transactionDateTime = dateTime ?? now;
+    final currencyCode = ref.read(currentCurrencyCodeProvider);
     final txn = TransactionEntity(
       id: now.microsecondsSinceEpoch.toString(),
       title: title,
@@ -37,7 +40,9 @@ class TransactionListViewModel extends AsyncNotifier<List<TransactionEntity>> {
       walletAccountId: walletAccountId,
       note: note,
       dateTime: transactionDateTime,
-      currencyCode: 'USD',
+      currencyCode: currencyCode.isEmpty
+          ? AppConstants.defaultCurrency
+          : currencyCode,
       createdAt: now,
       updatedAt: now,
     );

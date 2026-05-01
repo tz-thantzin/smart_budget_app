@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../core/constants/app_currency.dart';
 import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../viewmodels/settings_viewmodel.dart';
@@ -64,6 +65,21 @@ class SettingsScreen extends HookConsumerWidget {
               ],
             ),
             SizedBox(height: 16.h),
+            _SettingsAccordionPanel(
+              title: l10n.currency,
+              children: AppCurrency.values
+                  .map(
+                    (currency) => _CurrencyTile(
+                      title: currency.label,
+                      symbol: currency.symbol,
+                      value: currency.code,
+                      groupValue: data.currencyCode,
+                      onChanged: (value) => _saveCurrency(context, ref, value),
+                    ),
+                  )
+                  .toList(),
+            ),
+            SizedBox(height: 16.h),
             _SettingsPanel(
               title: l10n.security,
               children: [
@@ -107,6 +123,22 @@ class SettingsScreen extends HookConsumerWidget {
     final l10n = context.localization;
     final language = locale.languageCode == 'my' ? l10n.myanmar : l10n.english;
     _showSnackBarMessage(context, l10n.languageChanged(language));
+  }
+
+  Future<void> _saveCurrency(
+    BuildContext context,
+    WidgetRef ref,
+    String? currencyCode,
+  ) async {
+    if (currencyCode == null) return;
+    await ref
+        .read(settingsViewModelProvider.notifier)
+        .setCurrencyCode(currencyCode);
+    if (!context.mounted) return;
+    _showSnackBarMessage(
+      context,
+      '${context.localization.preferencesSaved}: $currencyCode',
+    );
   }
 
   Future<void> _saveFingerprintLogin(
@@ -195,7 +227,6 @@ class _SettingsAccordionPanel extends StatelessWidget {
       child: Theme(
         data: theme.copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          initiallyExpanded: true,
           tilePadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
           childrenPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
           shape: RoundedRectangleBorder(
@@ -258,6 +289,34 @@ class _LanguageTile extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       trailing: selected ? const Icon(Icons.check_circle_rounded) : null,
       onTap: () => onChanged(locale),
+    );
+  }
+}
+
+class _CurrencyTile extends StatelessWidget {
+  const _CurrencyTile({
+    required this.title,
+    required this.symbol,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  final String title;
+  final String symbol;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = value == groupValue;
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(symbol),
+      contentPadding: EdgeInsets.zero,
+      trailing: selected ? const Icon(Icons.check_circle_rounded) : null,
+      onTap: () => onChanged(value),
     );
   }
 }

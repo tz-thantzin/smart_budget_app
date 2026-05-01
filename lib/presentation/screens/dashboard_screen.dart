@@ -8,6 +8,7 @@ import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/dashboard_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 import '../widgets/quick_action_button.dart';
 import '../widgets/summary_card.dart';
 
@@ -17,6 +18,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboard = ref.watch(dashboardViewModelProvider);
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final l10n = context.localization;
     return AppScaffold(
       title: l10n.dashboard,
@@ -31,14 +33,20 @@ class DashboardScreen extends ConsumerWidget {
         data: (data) => ListView(
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
           children: [
-            _BalanceHeader(balance: data.totalBalance),
+            _BalanceHeader(
+              balance: data.totalBalance,
+              currencyCode: currencyCode,
+            ),
             SizedBox(height: 16.h),
             Row(
               children: [
                 Expanded(
                   child: SummaryCard(
                     title: l10n.income,
-                    value: Formatters.currency(data.totalIncome),
+                    value: Formatters.currency(
+                      data.totalIncome,
+                      currencyCode: currencyCode,
+                    ),
                     icon: Icons.south_west,
                     color: const Color(0xFF1B9E77),
                   ),
@@ -47,7 +55,10 @@ class DashboardScreen extends ConsumerWidget {
                 Expanded(
                   child: SummaryCard(
                     title: l10n.expense,
-                    value: Formatters.currency(data.totalExpense),
+                    value: Formatters.currency(
+                      data.totalExpense,
+                      currencyCode: currencyCode,
+                    ),
                     icon: Icons.north_east,
                     color: const Color(0xFFE35D4F),
                   ),
@@ -124,7 +135,10 @@ class DashboardScreen extends ConsumerWidget {
                   child: _TransactionTile(
                     title: e.title,
                     date: Formatters.date(e.dateTime),
-                    amount: Formatters.currency(e.amount),
+                    amount: Formatters.currency(
+                      e.amount,
+                      currencyCode: currencyCode,
+                    ),
                     isIncome: e.type.name == 'income',
                     onTap: () async {
                       await context.push(AppRoutes.transactionDetail, extra: e);
@@ -173,9 +187,10 @@ class DashboardScreen extends ConsumerWidget {
 }
 
 class _BalanceHeader extends StatelessWidget {
-  const _BalanceHeader({required this.balance});
+  const _BalanceHeader({required this.balance, required this.currencyCode});
 
   final double balance;
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +226,7 @@ class _BalanceHeader extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            Formatters.currency(balance),
+            Formatters.currency(balance, currencyCode: currencyCode),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.headlineLarge?.copyWith(

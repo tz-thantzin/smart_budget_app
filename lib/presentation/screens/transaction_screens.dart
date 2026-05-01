@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../core/constants/app_currency.dart';
 import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
@@ -17,6 +18,7 @@ import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/budget_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 import '../viewmodels/transaction_viewmodel.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
@@ -46,6 +48,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -82,7 +85,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 controller: _amount,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: l10n.amount,
+                  labelText:
+                      '${l10n.amount} (${AppCurrency.fromCode(currencyCode).symbol})',
                   prefixIcon: Icon(Icons.payments_rounded),
                 ),
               ),
@@ -388,6 +392,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final currentCurrencyCode = ref.watch(currentCurrencyCodeProvider);
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -436,7 +441,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 controller: _amount,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: l10n.amount,
+                  labelText:
+                      '${l10n.amount} (${AppCurrency.fromCode(currentCurrencyCode).symbol})',
                   prefixIcon: Icon(Icons.payments_rounded),
                 ),
               ),
@@ -502,6 +508,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                     categoryId: _categoryId ?? '',
                     dateTime: _selectedDate,
                     note: _note.text.trim().isEmpty ? null : _note.text.trim(),
+                    currencyCode: currentCurrencyCode,
                     updatedAt: DateTime.now(),
                   );
                   await ref
@@ -534,6 +541,7 @@ class TransactionDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     return AppScaffold(
       title: context.localization.transactionDetail,
       actions: [
@@ -571,7 +579,10 @@ class TransactionDetailScreen extends ConsumerWidget {
               ),
               _DetailTile(
                 label: context.localization.amount,
-                value: Formatters.currency(transaction.amount),
+                value: Formatters.currency(
+                  transaction.amount,
+                  currencyCode: currencyCode,
+                ),
                 icon: Icons.payments_rounded,
               ),
               _DetailTile(
@@ -617,6 +628,7 @@ class _TransactionHistoryScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(transactionListViewModelProvider);
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     return AppScaffold(
       title: context.localization.transactionHistory,
       child: state.when(
@@ -701,7 +713,10 @@ class _TransactionHistoryScreenState
                           return _TransactionListTile(
                             title: txn.title,
                             type: txn.type,
-                            amount: Formatters.currency(txn.amount),
+                            amount: Formatters.currency(
+                              txn.amount,
+                              currencyCode: currencyCode,
+                            ),
                             dateLabel: Formatters.date(txn.dateTime),
                             onTap: () async {
                               final changed = await context.push<bool>(
@@ -827,6 +842,7 @@ Future<void> _showBudgetAlertIfNeeded(
   final usagePercent = (alertBudget.usagePercent * 100).clamp(0, 999).round();
   final isOverBudget = alertBudget.usagePercent >= 1;
   final l10n = context.localization;
+  final currencyCode = ref.read(currentCurrencyCodeProvider);
   await showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -835,8 +851,14 @@ Future<void> _showBudgetAlertIfNeeded(
         l10n.budgetAlertMessage(
           alertBudget.title,
           usagePercent,
-          Formatters.currency(alertBudget.spentAmount),
-          Formatters.currency(alertBudget.amountLimit),
+          Formatters.currency(
+            alertBudget.spentAmount,
+            currencyCode: currencyCode,
+          ),
+          Formatters.currency(
+            alertBudget.amountLimit,
+            currencyCode: currencyCode,
+          ),
         ),
       ),
       actions: [

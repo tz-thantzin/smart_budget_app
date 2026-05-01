@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
+import '../../core/constants/app_currency.dart';
 import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
@@ -14,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/budget_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 
 class BudgetListScreen extends ConsumerWidget {
   const BudgetListScreen({super.key});
@@ -21,6 +23,7 @@ class BudgetListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final budgets = ref.watch(budgetViewModelProvider);
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -45,8 +48,14 @@ class BudgetListScreen extends ConsumerWidget {
                 (e) => _BudgetCard(
                   title: e.title,
                   period: e.periodType.name,
-                  limit: Formatters.currency(e.amountLimit),
-                  spent: Formatters.currency(e.spentAmount),
+                  limit: Formatters.currency(
+                    e.amountLimit,
+                    currencyCode: currencyCode,
+                  ),
+                  spent: Formatters.currency(
+                    e.spentAmount,
+                    currencyCode: currencyCode,
+                  ),
                   percent: e.usagePercent.clamp(0, 1).toDouble(),
                   spentLabel: l10n.spent,
                   limitLabel: l10n.limit,
@@ -112,6 +121,7 @@ class _CreateEditBudgetScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = context.localization;
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -156,7 +166,8 @@ class _CreateEditBudgetScreenState
                 controller: amountCtrl,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: l10n.limitAmount,
+                  labelText:
+                      '${l10n.limitAmount} (${AppCurrency.fromCode(currencyCode).symbol})',
                   prefixIcon: Icon(Icons.payments_rounded),
                 ),
               ),
@@ -402,6 +413,7 @@ class BudgetDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
@@ -463,14 +475,24 @@ class BudgetDetailScreen extends ConsumerWidget {
               ListTile(
                 leading: const CircleAvatar(child: Icon(Icons.flag_rounded)),
                 title: Text(l10n.limit),
-                subtitle: Text(Formatters.currency(budget.amountLimit)),
+                subtitle: Text(
+                  Formatters.currency(
+                    budget.amountLimit,
+                    currencyCode: currencyCode,
+                  ),
+                ),
               ),
               ListTile(
                 leading: const CircleAvatar(
                   child: Icon(Icons.trending_up_rounded),
                 ),
                 title: Text(l10n.spent),
-                subtitle: Text(Formatters.currency(budget.spentAmount)),
+                subtitle: Text(
+                  Formatters.currency(
+                    budget.spentAmount,
+                    currencyCode: currencyCode,
+                  ),
+                ),
               ),
             ],
           ),

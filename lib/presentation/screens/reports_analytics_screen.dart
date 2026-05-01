@@ -12,6 +12,7 @@ import '../../di/app_providers.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
+import '../viewmodels/settings_viewmodel.dart';
 
 class ReportsAnalyticsScreen extends HookConsumerWidget {
   const ReportsAnalyticsScreen({super.key});
@@ -19,6 +20,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
+    final currencyCode = ref.watch(currentCurrencyCodeProvider);
     final selectedDate = useState(DateTime.now());
     final exportingKey = useState<String?>(null);
     final transactionsUseCase = ref.watch(getTransactionsUseCaseProvider);
@@ -112,6 +114,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
                 title: l10n.expenseReport,
                 selectedDate: _formatDateTitle(context, selected),
                 amount: cards.first.amount,
+                currencyCode: currencyCode,
                 onChooseDate: () async {
                   final picked = await showDatePicker(
                     context: context,
@@ -135,8 +138,14 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
                   padding: EdgeInsets.only(bottom: 12.h),
                   child: _ReportCard(
                     period: period,
+                    currencyCode: currencyCode,
                     isExporting: exportingKey.value == period.exportKey,
-                    onTap: () => _showReportDetails(context, period, items),
+                    onTap: () => _showReportDetails(
+                      context,
+                      period,
+                      items,
+                      currencyCode,
+                    ),
                     onExport:
                         snapshot.connectionState == ConnectionState.waiting
                         ? null
@@ -260,12 +269,14 @@ class _ReportHero extends StatelessWidget {
     required this.title,
     required this.selectedDate,
     required this.amount,
+    required this.currencyCode,
     required this.onChooseDate,
   });
 
   final String title;
   final String selectedDate;
   final double amount;
+  final String currencyCode;
   final VoidCallback onChooseDate;
 
   @override
@@ -317,7 +328,7 @@ class _ReportHero extends StatelessWidget {
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
-              Formatters.currency(amount),
+              Formatters.currency(amount, currencyCode: currencyCode),
               style: theme.textTheme.headlineLarge?.copyWith(
                 color: theme.colorScheme.onPrimary,
               ),
@@ -357,12 +368,14 @@ class _ReportHero extends StatelessWidget {
 class _ReportCard extends StatelessWidget {
   const _ReportCard({
     required this.period,
+    required this.currencyCode,
     required this.onTap,
     required this.isExporting,
     required this.onExport,
   });
 
   final _ReportPeriod period;
+  final String currencyCode;
   final VoidCallback onTap;
   final bool isExporting;
   final VoidCallback? onExport;
@@ -435,7 +448,10 @@ class _ReportCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerRight,
                         child: Text(
-                          Formatters.currency(period.amount),
+                          Formatters.currency(
+                            period.amount,
+                            currencyCode: currencyCode,
+                          ),
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: theme.colorScheme.error,
                           ),
@@ -489,6 +505,7 @@ void _showReportDetails(
   BuildContext context,
   _ReportPeriod period,
   List<TransactionEntity> transactions,
+  String currencyCode,
 ) {
   final rows = _reportDetailRows(context, period, transactions);
   final theme = Theme.of(context);
@@ -516,7 +533,10 @@ void _showReportDetails(
                   ),
                 ),
                 SizedBox(height: 12.h),
-                _ReportDetailTotal(amount: period.amount),
+                _ReportDetailTotal(
+                  amount: period.amount,
+                  currencyCode: currencyCode,
+                ),
                 SizedBox(height: 10.h),
                 Expanded(
                   child: rows.isEmpty
@@ -532,7 +552,10 @@ void _showReportDetails(
                               title: Text(row.title),
                               subtitle: Text(row.subtitle),
                               trailing: Text(
-                                Formatters.currency(row.amount),
+                                Formatters.currency(
+                                  row.amount,
+                                  currencyCode: currencyCode,
+                                ),
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   color: theme.colorScheme.error,
                                 ),
@@ -551,9 +574,10 @@ void _showReportDetails(
 }
 
 class _ReportDetailTotal extends StatelessWidget {
-  const _ReportDetailTotal({required this.amount});
+  const _ReportDetailTotal({required this.amount, required this.currencyCode});
 
   final double amount;
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -572,7 +596,7 @@ class _ReportDetailTotal extends StatelessWidget {
             child: Text(l10n.totalSpent, style: theme.textTheme.labelLarge),
           ),
           Text(
-            Formatters.currency(amount),
+            Formatters.currency(amount, currencyCode: currencyCode),
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.onErrorContainer,
             ),

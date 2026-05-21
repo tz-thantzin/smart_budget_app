@@ -6,6 +6,7 @@ import 'package:budget_app/core/utils/formatters.dart';
 import 'package:budget_app/domain/entities/category_entity.dart';
 import 'package:budget_app/domain/entities/enums.dart';
 import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/presentation/viewmodels/category_viewmodel.dart';
 import 'package:budget_app/presentation/viewmodels/reports_viewmodel.dart';
 import 'package:budget_app/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:budget_app/router/app_routes.dart';
@@ -774,7 +775,7 @@ class _CategoryRow extends StatelessWidget {
         : Color(category.colorHex);
     final icon = category == null
         ? Icons.label_off_rounded
-        : IconData(category.iconCodePoint, fontFamily: 'MaterialIcons');
+        : categoryIconFromCodePoint(category.iconCodePoint);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -867,7 +868,7 @@ class _TransactionsList extends StatelessWidget {
               category == null ? typeColor : Color(category.colorHex);
           final iconData = category == null
               ? (isExpense ? Icons.south_rounded : Icons.north_rounded)
-              : IconData(category.iconCodePoint, fontFamily: 'MaterialIcons');
+              : categoryIconFromCodePoint(category.iconCodePoint);
           return ListTile(
             onTap: () =>
                 context.push(AppRoutes.transactionDetail, extra: transaction),

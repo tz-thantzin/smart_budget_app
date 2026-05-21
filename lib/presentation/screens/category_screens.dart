@@ -196,7 +196,7 @@ class _CategoryCard extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = context.localization;
     final color = Color(category.colorHex);
-    final icon = _categoryIconFromCodePoint(category.iconCodePoint);
+    final icon = categoryIconFromCodePoint(category.iconCodePoint);
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
       decoration: BoxDecoration(
@@ -234,18 +234,6 @@ class _CategoryCard extends StatelessWidget {
   }
 }
 
-IconData _categoryIconFromCodePoint(int codePoint) {
-  if (codePoint == Icons.restaurant_rounded.codePoint) {
-    return Icons.restaurant_rounded;
-  }
-  if (codePoint == Icons.category.codePoint) {
-    return Icons.category;
-  }
-  if (codePoint == Icons.category_rounded.codePoint) {
-    return Icons.category_rounded;
-  }
-  return Icons.category_rounded;
-}
 
 class _CategoryPanel extends StatelessWidget {
   const _CategoryPanel({required this.children});

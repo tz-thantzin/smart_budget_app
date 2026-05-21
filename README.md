@@ -84,6 +84,14 @@ lib/
 | `flutter_hooks` | `useState`, `useMemoized` in stateful screens |
 | `google_fonts` | Typography |
 
+## Try It
+
+A pre-built APK is available at [`assets/apk/smart_budget_app.apk`](assets/apk/smart_budget_app.apk).
+
+To install on an Android device:
+1. Enable **Install unknown apps** in device settings.
+2. Transfer the APK to your device and open it to install.
+
 ## Getting Started
 
 ```bash
@@ -99,7 +107,6 @@ flutter build ipa        # iOS release build
 
 ## Notes
 
-- Package name in `pubspec.yaml` is `budget_app`; the folder is `smart_budget_app`. All imports use `package:budget_app/...`.
 - A default `Food` expense category (id `default_food`) is seeded on fresh install.
 - Currency formatting reads `decimalDigits` from the `AppCurrency` enum — adding a new currency requires an entry there. Some currencies use 0 decimal places (MMK, JPY, KRW).
 - PDF export uses built-in Helvetica fonts (no network required). Currency amounts are formatted with the ISO code prefix (e.g. `THB 1,234.56`) to avoid font glyph issues with special currency symbols.

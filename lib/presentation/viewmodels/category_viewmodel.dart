@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/id_generator.dart';
@@ -54,4 +55,15 @@ CategoryEntity? findCategoryById(List<CategoryEntity> categories, String? id) {
     if (c.id == id) return c;
   }
   return null;
+}
+
+IconData categoryIconFromCodePoint(int codePoint) {
+  if (codePoint == Icons.restaurant_rounded.codePoint) {
+    return Icons.restaurant_rounded;
+  }
+  if (codePoint == Icons.category.codePoint) return Icons.category;
+  if (codePoint == Icons.category_rounded.codePoint) {
+    return Icons.category_rounded;
+  }
+  return Icons.category_rounded;
 }

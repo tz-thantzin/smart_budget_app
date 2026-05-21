@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/id_generator.dart';
 import '../../di/app_providers.dart';
 import '../../domain/entities/budget_entity.dart';
+import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
 import 'dashboard_viewmodel.dart';
@@ -25,7 +27,7 @@ class BudgetViewModel extends AsyncNotifier<List<BudgetEntity>> {
   }) async {
     final now = DateTime.now();
     final budget = BudgetEntity(
-      id: now.microsecondsSinceEpoch.toString(),
+      id: newId(),
       title: title,
       amountLimit: amountLimit,
       categoryId: categoryId,
@@ -84,3 +86,28 @@ class BudgetViewModel extends AsyncNotifier<List<BudgetEntity>> {
     return DateTime(value.year, value.month, value.day);
   }
 }
+
+BudgetEntity? budgetNeedingAlert(
+  List<BudgetEntity> budgets,
+  String? categoryId,
+) {
+  final matching = budgets
+      .where(
+        (b) =>
+            b.amountLimit > 0 &&
+            _matchesBudgetCategory(b, categoryId) &&
+            b.usagePercent >= b.alertThresholdPercent,
+      )
+      .toList()
+    ..sort((a, b) => b.usagePercent.compareTo(a.usagePercent));
+  return matching.isEmpty ? null : matching.first;
+}
+
+bool _matchesBudgetCategory(BudgetEntity budget, String? categoryId) {
+  final budgetCategoryId = budget.categoryId;
+  if (budgetCategoryId == null || budgetCategoryId.isEmpty) return true;
+  return budgetCategoryId == categoryId;
+}
+
+List<CategoryEntity> expenseCategories(List<CategoryEntity> all) =>
+    all.where((c) => c.type == TransactionType.expense).toList();

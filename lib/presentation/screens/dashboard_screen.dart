@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
+import '../../domain/entities/enums.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/dashboard_viewmodel.dart';
 import '../viewmodels/settings_viewmodel.dart';
@@ -139,7 +140,7 @@ class DashboardScreen extends ConsumerWidget {
                       e.amount,
                       currencyCode: currencyCode,
                     ),
-                    isIncome: e.type.name == 'income',
+                    isIncome: e.type == TransactionType.income,
                     onTap: () async {
                       await context.push(AppRoutes.transactionDetail, extra: e);
                       ref.invalidate(dashboardViewModelProvider);

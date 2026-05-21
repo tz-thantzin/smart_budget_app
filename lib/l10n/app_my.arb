@@ -130,12 +130,23 @@
   "reportSummary": "အကျဉ်းချုပ်",
   "reportTransactions": "ငွေလွှဲများ",
   "generatedAt": "ထုတ်လုပ်သည့် အချိန်",
-  "period": "ကာလ",
   "transactionCount": "ငွေလွှဲ အရေအတွက်",
   "category": "အမျိုးအစား",
   "unknownCategory": "အမျိုးအစား မသတ်မှတ်ရသေး",
   "currency": "ငွေကြေး",
   "week": "အပတ်",
   "month": "လ",
-  "year": "နှစ်"
+  "year": "နှစ်",
+  "day": "နေ့",
+  "net": "ပိုငွေ",
+  "spendingTrend": "အသုံးစရိတ် ပြောင်းလဲမှု",
+  "previousPeriodLabel": "ယခင်ကာလ",
+  "nextPeriodLabel": "နောက်ကာလ",
+  "noTransactionsInPeriod": "ဤကာလအတွင်း ငွေလွှဲမှတ်တမ်း မရှိပါ",
+  "transactionsHeader": "ငွေလွှဲမှတ်တမ်း ({count})",
+  "@transactionsHeader": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

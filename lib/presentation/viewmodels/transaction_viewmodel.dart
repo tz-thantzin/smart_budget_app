@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/id_generator.dart';
 import '../../di/app_providers.dart';
+import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
 import 'budget_viewmodel.dart';
@@ -32,7 +34,7 @@ class TransactionListViewModel extends AsyncNotifier<List<TransactionEntity>> {
     final transactionDateTime = dateTime ?? now;
     final currencyCode = ref.read(currentCurrencyCodeProvider);
     final txn = TransactionEntity(
-      id: now.microsecondsSinceEpoch.toString(),
+      id: newId(),
       title: title,
       amount: amount,
       type: type,
@@ -66,3 +68,45 @@ class TransactionListViewModel extends AsyncNotifier<List<TransactionEntity>> {
     ref.invalidate(budgetViewModelProvider);
   }
 }
+
+List<CategoryEntity> categoriesForType(
+  List<CategoryEntity> all,
+  TransactionType type,
+) =>
+    all.where((c) => c.type == type).toList();
+
+String? validatedCategoryId(
+  String? categoryId,
+  List<CategoryEntity> matching,
+) {
+  if (categoryId == null) return null;
+  return matching.any((c) => c.id == categoryId) ? categoryId : null;
+}
+
+List<TransactionEntity> filterAndSortTransactions(
+  List<TransactionEntity> items, {
+  required String query,
+  required bool onlyExpense,
+  required DateTime? selectedDate,
+}) {
+  var result = query.isEmpty
+      ? items.toList()
+      : items
+            .where(
+              (e) => e.title.toLowerCase().contains(query.toLowerCase()),
+            )
+            .toList();
+  if (onlyExpense) {
+    result = result.where((e) => e.type == TransactionType.expense).toList();
+  }
+  if (selectedDate != null) {
+    result = result
+        .where((e) => _sameCalendarDay(e.dateTime, selectedDate))
+        .toList();
+  }
+  result.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+  return result;
+}
+
+bool _sameCalendarDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;

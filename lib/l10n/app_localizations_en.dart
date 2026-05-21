@@ -352,4 +352,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get year => 'Year';
+
+  @override
+  String get day => 'Day';
+
+  @override
+  String get net => 'Net';
+
+  @override
+  String get spendingTrend => 'Spending trend';
+
+  @override
+  String get previousPeriodLabel => 'Previous period';
+
+  @override
+  String get nextPeriodLabel => 'Next period';
+
+  @override
+  String get noTransactionsInPeriod => 'No transactions in this period';
+
+  @override
+  String transactionsHeader(Object count) {
+    return 'Transactions ($count)';
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/id_generator.dart';
 import '../../di/app_providers.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
@@ -23,7 +24,7 @@ class CategoryViewModel extends AsyncNotifier<List<CategoryEntity>> {
     int color,
   ) async {
     final category = CategoryEntity(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id: newId(),
       name: name,
       type: type,
       iconCodePoint: icon,
@@ -45,4 +46,12 @@ class CategoryViewModel extends AsyncNotifier<List<CategoryEntity>> {
     state = AsyncData(await ref.read(getCategoriesUseCaseProvider).call());
     ref.invalidate(dashboardViewModelProvider);
   }
+}
+
+CategoryEntity? findCategoryById(List<CategoryEntity> categories, String? id) {
+  if (id == null || id.isEmpty) return null;
+  for (final c in categories) {
+    if (c.id == id) return c;
+  }
+  return null;
 }

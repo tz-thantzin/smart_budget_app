@@ -750,6 +750,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Year'**
   String get year;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get day;
+
+  /// No description provided for @net.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get net;
+
+  /// No description provided for @spendingTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending trend'**
+  String get spendingTrend;
+
+  /// No description provided for @previousPeriodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous period'**
+  String get previousPeriodLabel;
+
+  /// No description provided for @nextPeriodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next period'**
+  String get nextPeriodLabel;
+
+  /// No description provided for @noTransactionsInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions in this period'**
+  String get noTransactionsInPeriod;
+
+  /// No description provided for @transactionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions ({count})'**
+  String transactionsHeader(Object count);
 }
 
 class _AppLocalizationsDelegate

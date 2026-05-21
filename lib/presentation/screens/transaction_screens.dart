@@ -10,7 +10,6 @@ import '../../core/extensions/build_context_extensions.dart';
 import '../../core/shared_widgets/app_selection_field.dart';
 import '../../core/shared_widgets/app_scaffold.dart';
 import '../../core/utils/formatters.dart';
-import '../../domain/entities/budget_entity.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
 import '../../domain/entities/transaction_entity.dart';
@@ -52,13 +51,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
-    final matchingCategories = categories
-        .where((category) => category.type == _type)
-        .toList();
-    if (_categoryId != null &&
-        !matchingCategories.any((category) => category.id == _categoryId)) {
-      _categoryId = null;
-    }
+    final matchingCategories = categoriesForType(categories, _type);
+    _categoryId = validatedCategoryId(_categoryId, matchingCategories);
 
     return AppScaffold(
       title: l10n.addTransaction,
@@ -396,13 +390,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
-    final matchingCategories = categories
-        .where((category) => category.type == _type)
-        .toList();
-    if (_categoryId != null &&
-        !matchingCategories.any((category) => category.id == _categoryId)) {
-      _categoryId = null;
-    }
+    final matchingCategories = categoriesForType(categories, _type);
+    _categoryId = validatedCategoryId(_categoryId, matchingCategories);
 
     return AppScaffold(
       title: l10n.editTransaction,
@@ -633,20 +622,12 @@ class _TransactionHistoryScreenState
       title: context.localization.transactionHistory,
       child: state.when(
         data: (items) {
-          var filtered = items
-              .where((e) => e.title.toLowerCase().contains(query.toLowerCase()))
-              .toList();
-          if (onlyExpense) {
-            filtered = filtered
-                .where((e) => e.type == TransactionType.expense)
-                .toList();
-          }
-          if (selectedDate != null) {
-            filtered = filtered
-                .where((e) => _isSameCalendarDate(e.dateTime, selectedDate!))
-                .toList();
-          }
-          filtered.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+          final filtered = filterAndSortTransactions(
+            items,
+            query: query,
+            onlyExpense: onlyExpense,
+            selectedDate: selectedDate,
+          );
           return Column(
             children: [
               Padding(
@@ -781,12 +762,6 @@ class _HistoryDateFilterField extends StatelessWidget {
   }
 }
 
-bool _isSameCalendarDate(DateTime left, DateTime right) {
-  return left.year == right.year &&
-      left.month == right.month &&
-      left.day == right.day;
-}
-
 Future<void> _deleteTransaction(
   BuildContext context,
   WidgetRef ref,
@@ -833,7 +808,7 @@ Future<void> _showBudgetAlertIfNeeded(
   if (transactionType != TransactionType.expense) return;
 
   final budgets = await ref.refresh(budgetViewModelProvider.future);
-  final alertBudget = _budgetNeedingAlert(budgets, categoryId);
+  final alertBudget = budgetNeedingAlert(budgets, categoryId);
   if (alertBudget == null || !context.mounted) return;
 
   await _playBudgetAlertFeedback();
@@ -896,30 +871,6 @@ Future<void> _playBudgetAlertFeedback() async {
   await HapticFeedback.heavyImpact();
   await Future<void>.delayed(const Duration(milliseconds: 120));
   await HapticFeedback.vibrate();
-}
-
-BudgetEntity? _budgetNeedingAlert(
-  List<BudgetEntity> budgets,
-  String? categoryId,
-) {
-  final matchingBudgets =
-      budgets
-          .where(
-            (budget) =>
-                budget.amountLimit > 0 &&
-                _budgetMatchesCategory(budget, categoryId) &&
-                budget.usagePercent >= budget.alertThresholdPercent,
-          )
-          .toList()
-        ..sort((a, b) => b.usagePercent.compareTo(a.usagePercent));
-
-  return matchingBudgets.isEmpty ? null : matchingBudgets.first;
-}
-
-bool _budgetMatchesCategory(BudgetEntity budget, String? categoryId) {
-  final budgetCategoryId = budget.categoryId;
-  if (budgetCategoryId == null || budgetCategoryId.isEmpty) return true;
-  return budgetCategoryId == categoryId;
 }
 
 String _transactionTypeLabel(AppLocalizations l10n, TransactionType type) {

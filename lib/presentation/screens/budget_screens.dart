@@ -11,11 +11,11 @@ import '../../core/utils/formatters.dart';
 import '../../domain/entities/budget_entity.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/enums.dart';
-import '../../l10n/app_localizations.dart';
 import '../../router/app_routes.dart';
 import '../viewmodels/budget_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/settings_viewmodel.dart';
+import '../viewmodels/transaction_viewmodel.dart';
 
 class BudgetListScreen extends ConsumerWidget {
   const BudgetListScreen({super.key});
@@ -59,7 +59,9 @@ class BudgetListScreen extends ConsumerWidget {
                   percent: e.usagePercent.clamp(0, 1).toDouble(),
                   spentLabel: l10n.spent,
                   limitLabel: l10n.limit,
-                  category: _categoryLabel(l10n, categories, e.categoryId),
+                  category:
+                      findCategoryById(categories, e.categoryId)?.name ??
+                      l10n.noCategory,
                   onTap: () async {
                     final changed = await context.push<bool>(
                       AppRoutes.budgetDetail,
@@ -125,10 +127,7 @@ class _CreateEditBudgetScreenState
     final categories = ref
         .watch(categoryViewModelProvider)
         .maybeWhen(data: (items) => items, orElse: () => <CategoryEntity>[]);
-    if (categoryId != null &&
-        !categories.any((category) => category.id == categoryId)) {
-      categoryId = null;
-    }
+    categoryId = validatedCategoryId(categoryId, categories);
     return AppScaffold(
       title: l10n.saveBudget,
       actions: [
@@ -367,14 +366,12 @@ class _BudgetCategoryDropdown extends StatelessWidget {
       prefixIcon: const Icon(Icons.category_rounded),
       options: [
         AppSelectionOption<String?>(value: null, label: noneLabel),
-        ...categories
-            .where((category) => category.type == TransactionType.expense)
-            .map(
-              (category) => AppSelectionOption<String?>(
-                value: category.id,
-                label: category.name,
-              ),
-            ),
+        ...expenseCategories(categories).map(
+          (category) => AppSelectionOption<String?>(
+            value: category.id,
+            label: category.name,
+          ),
+        ),
       ],
       onSelected: onChanged,
     );
@@ -462,7 +459,8 @@ class BudgetDetailScreen extends ConsumerWidget {
                 ),
                 title: Text(l10n.categoryOptional),
                 subtitle: Text(
-                  _categoryLabel(l10n, categories, budget.categoryId),
+                  findCategoryById(categories, budget.categoryId)?.name ??
+                      l10n.noCategory,
                 ),
               ),
               ListTile(
@@ -500,18 +498,6 @@ class BudgetDetailScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-String _categoryLabel(
-  AppLocalizations l10n,
-  List<CategoryEntity> categories,
-  String? categoryId,
-) {
-  if (categoryId == null || categoryId.isEmpty) return l10n.noCategory;
-  for (final category in categories) {
-    if (category.id == categoryId) return category.name;
-  }
-  return l10n.noCategory;
 }
 
 Future<void> _confirmDeleteBudget(

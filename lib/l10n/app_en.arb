@@ -136,5 +136,17 @@
   "currency": "Currency",
   "week": "Week",
   "month": "Month",
-  "year": "Year"
+  "year": "Year",
+  "day": "Day",
+  "net": "Net",
+  "spendingTrend": "Spending trend",
+  "previousPeriodLabel": "Previous period",
+  "nextPeriodLabel": "Next period",
+  "noTransactionsInPeriod": "No transactions in this period",
+  "transactionsHeader": "Transactions ({count})",
+  "@transactionsHeader": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

@@ -350,4 +350,27 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get year => 'နှစ်';
+
+  @override
+  String get day => 'နေ့';
+
+  @override
+  String get net => 'ပိုငွေ';
+
+  @override
+  String get spendingTrend => 'အသုံးစရိတ် ပြောင်းလဲမှု';
+
+  @override
+  String get previousPeriodLabel => 'ယခင်ကာလ';
+
+  @override
+  String get nextPeriodLabel => 'နောက်ကာလ';
+
+  @override
+  String get noTransactionsInPeriod => 'ဤကာလအတွင်း ငွေလွှဲမှတ်တမ်း မရှိပါ';
+
+  @override
+  String transactionsHeader(Object count) {
+    return 'ငွေလွှဲမှတ်တမ်း ($count)';
+  }
 }

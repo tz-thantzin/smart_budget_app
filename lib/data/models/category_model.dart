@@ -10,10 +10,10 @@ class CategoryModel extends CategoryEntity {
   });
 
   factory CategoryModel.fromEntity(CategoryEntity entity) => CategoryModel(
-        id: entity.id,
-        name: entity.name,
-        type: entity.type,
-        iconCodePoint: entity.iconCodePoint,
-        colorHex: entity.colorHex,
-      );
+    id: entity.id,
+    name: entity.name,
+    type: entity.type,
+    iconCodePoint: entity.iconCodePoint,
+    colorHex: entity.colorHex,
+  );
 }

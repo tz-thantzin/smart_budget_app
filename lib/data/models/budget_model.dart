@@ -37,7 +37,7 @@ class BudgetModel extends BudgetEntity {
       periodType: BudgetPeriodType.values.byName(map['period_type'] as String),
       startDate: DateTime.fromMillisecondsSinceEpoch(map['start_date'] as int),
       endDate: DateTime.fromMillisecondsSinceEpoch(map['end_date'] as int),
-      spentAmount: (map['spent_amount'] as num).toDouble(),
+      spentAmount: 0,
       alertThresholdPercent: (map['alert_threshold_percent'] as num).toDouble(),
       rolloverEnabled: (map['rollover_enabled'] as int) == 1,
     );
@@ -52,7 +52,7 @@ class BudgetModel extends BudgetEntity {
       'period_type': periodType.name,
       'start_date': startDate.millisecondsSinceEpoch,
       'end_date': endDate.millisecondsSinceEpoch,
-      'spent_amount': spentAmount,
+      'spent_amount': 0.0,
       'alert_threshold_percent': alertThresholdPercent,
       'rollover_enabled': rolloverEnabled ? 1 : 0,
     };

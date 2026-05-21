@@ -5,8 +5,8 @@ import '../../domain/entities/dashboard_summary_entity.dart';
 
 final dashboardViewModelProvider =
     AsyncNotifierProvider<DashboardViewModel, DashboardSummaryEntity>(
-  DashboardViewModel.new,
-);
+      DashboardViewModel.new,
+    );
 
 class DashboardViewModel extends AsyncNotifier<DashboardSummaryEntity> {
   @override
@@ -16,6 +16,8 @@ class DashboardViewModel extends AsyncNotifier<DashboardSummaryEntity> {
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = AsyncData(await ref.read(getDashboardSummaryUseCaseProvider).call());
+    state = AsyncData(
+      await ref.read(getDashboardSummaryUseCaseProvider).call(),
+    );
   }
 }

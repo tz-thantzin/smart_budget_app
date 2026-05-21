@@ -1,5 +1,6 @@
+import 'package:budget_app/core/constants/app_currency.dart';
 import 'package:budget_app/core/extensions/build_context_extensions.dart';
-import 'package:budget_app/core/services/report_excel_export_service.dart';
+import 'package:budget_app/core/services/report_pdf_export_service.dart';
 import 'package:budget_app/core/shared_widgets/app_scaffold.dart';
 import 'package:budget_app/core/utils/formatters.dart';
 import 'package:budget_app/domain/entities/category_entity.dart';
@@ -25,7 +26,7 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
     final isExporting = useState(false);
     final summaryAsync = ref.watch(reportsViewModelProvider);
     final vm = ref.read(reportsViewModelProvider.notifier);
-    final exportService = useMemoized(() => const ReportExcelExportService());
+    final exportService = useMemoized(() => const ReportPdfExportService());
 
     return AppScaffold(
       title: l10n.reports,
@@ -46,11 +47,12 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
                       ? () => _export(
                           context: context,
                           summary: summaryAsync.requireValue,
+                          currencyCode: currencyCode,
                           exportService: exportService,
                           isExporting: isExporting,
                         )
                       : null,
-                  tooltip: l10n.exportExcel,
+                  tooltip: l10n.exportPdf,
                   icon: const Icon(Icons.file_download_rounded),
                 ),
         ),
@@ -135,7 +137,8 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
   Future<void> _export({
     required BuildContext context,
     required ReportSummaryState summary,
-    required ReportExcelExportService exportService,
+    required String currencyCode,
+    required ReportPdfExportService exportService,
     required ValueNotifier<bool> isExporting,
   }) async {
     final l10n = context.localization;
@@ -148,31 +151,36 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
     isExporting.value = true;
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(l10n.exportingExcel)));
+      ..showSnackBar(SnackBar(content: Text(l10n.exportingPdf)));
 
     try {
-      await exportService.exportExpenseReport(
-        reportTitle: l10n.expenseReport,
-        periodTitle: _periodTypeLabel(l10n, summary.periodType),
+      await exportService.exportReport(
         periodSubtitle: _periodLabel(context, summary),
         startDate: summary.periodStart,
         endDate: summary.periodEnd,
         localeTag: Localizations.localeOf(context).toLanguageTag(),
+        currencyCode: currencyCode,
+        currencyDecimalDigits: AppCurrency.fromCode(currencyCode).decimalDigits,
         transactions: summary.allTransactions,
         categoryNames: categoryNames,
-        strings: ReportExcelExportStrings(
-          summarySheetName: l10n.reportSummary,
-          transactionsSheetName: l10n.reportTransactions,
+        totalExpense: summary.totalExpense,
+        totalIncome: summary.totalIncome,
+        net: summary.net,
+        strings: ReportPdfExportStrings(
+          reportTitle: l10n.expenseReport,
+          summarySection: l10n.reportSummary,
+          transactionsSection: l10n.reportTransactions,
           periodLabel: l10n.period,
           generatedAtLabel: l10n.generatedAt,
-          totalSpentLabel: l10n.totalSpent,
+          totalExpenseLabel: l10n.totalSpent,
+          totalIncomeLabel: l10n.income,
+          netLabel: l10n.net,
           transactionCountLabel: l10n.transactionCount,
           dateLabel: l10n.date,
           titleLabel: l10n.title,
           categoryLabel: l10n.category,
           noteLabel: l10n.note,
           amountLabel: l10n.amount,
-          currencyLabel: l10n.currency,
           typeLabel: l10n.type,
           unknownCategoryLabel: l10n.unknownCategory,
           expenseLabel: l10n.expense,
@@ -182,12 +190,13 @@ class ReportsAnalyticsScreen extends HookConsumerWidget {
       if (!context.mounted) return;
       messenger
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.excelExported)));
-    } catch (_) {
+        ..showSnackBar(SnackBar(content: Text(l10n.pdfExported)));
+    } catch (e, st) {
+      debugPrint('PDF export error: $e\n$st');
       if (!context.mounted) return;
       messenger
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.excelExportFailed)));
+        ..showSnackBar(SnackBar(content: Text(l10n.pdfExportFailed)));
     } finally {
       isExporting.value = false;
     }
@@ -211,14 +220,6 @@ String _periodLabel(BuildContext context, ReportSummaryState summary) {
     ReportPeriodType.year => DateFormat.y(tag).format(summary.periodStart),
   };
 }
-
-String _periodTypeLabel(dynamic l10n, ReportPeriodType type) =>
-    switch (type) {
-      ReportPeriodType.day => l10n.day as String,
-      ReportPeriodType.week => l10n.week as String,
-      ReportPeriodType.month => l10n.month as String,
-      ReportPeriodType.year => l10n.year as String,
-    };
 
 List<_ChartBucket> _formatChartBuckets(
   BuildContext context,

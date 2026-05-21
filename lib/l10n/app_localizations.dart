@@ -667,29 +667,29 @@ abstract class AppLocalizations {
   /// **'Selected date'**
   String get selectedDateLabel;
 
-  /// No description provided for @exportExcel.
+  /// No description provided for @exportPdf.
   ///
   /// In en, this message translates to:
-  /// **'Export Excel'**
-  String get exportExcel;
+  /// **'Export PDF'**
+  String get exportPdf;
 
-  /// No description provided for @exportingExcel.
+  /// No description provided for @exportingPdf.
   ///
   /// In en, this message translates to:
-  /// **'Exporting Excel...'**
-  String get exportingExcel;
+  /// **'Generating PDF...'**
+  String get exportingPdf;
 
-  /// No description provided for @excelExported.
+  /// No description provided for @pdfExported.
   ///
   /// In en, this message translates to:
-  /// **'Excel file is ready to share.'**
-  String get excelExported;
+  /// **'PDF ready to share.'**
+  String get pdfExported;
 
-  /// No description provided for @excelExportFailed.
+  /// No description provided for @pdfExportFailed.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t export Excel file.'**
-  String get excelExportFailed;
+  /// **'Couldn\'t export PDF.'**
+  String get pdfExportFailed;
 
   /// No description provided for @reportSummary.
   ///
@@ -724,7 +724,7 @@ abstract class AppLocalizations {
   /// No description provided for @unknownCategory.
   ///
   /// In en, this message translates to:
-  /// **'Uncategorized'**
+  /// **'Others'**
   String get unknownCategory;
 
   /// No description provided for @currency.

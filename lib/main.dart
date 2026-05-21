@@ -34,6 +34,7 @@ class _BudgetAppState extends ConsumerState<BudgetApp> {
         routerConfig: router,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
+        debugShowCheckedModeBanner: false,
         themeMode: settings.maybeWhen(
           data: (data) => data.themeMode,
           orElse: () => ThemeMode.system,

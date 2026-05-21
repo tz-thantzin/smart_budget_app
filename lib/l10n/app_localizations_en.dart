@@ -312,16 +312,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectedDateLabel => 'Selected date';
 
   @override
-  String get exportExcel => 'Export Excel';
+  String get exportPdf => 'Export PDF';
 
   @override
-  String get exportingExcel => 'Exporting Excel...';
+  String get exportingPdf => 'Generating PDF...';
 
   @override
-  String get excelExported => 'Excel file is ready to share.';
+  String get pdfExported => 'PDF ready to share.';
 
   @override
-  String get excelExportFailed => 'Couldn\'t export Excel file.';
+  String get pdfExportFailed => 'Couldn\'t export PDF.';
 
   @override
   String get reportSummary => 'Summary';
@@ -339,7 +339,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get category => 'Category';
 
   @override
-  String get unknownCategory => 'Uncategorized';
+  String get unknownCategory => 'Others';
 
   @override
   String get currency => 'Currency';

@@ -1,7 +1,7 @@
-import 'budget_entity.dart';
-import 'category_entity.dart';
-import 'savings_goal_entity.dart';
-import 'transaction_entity.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/entities/savings_goal_entity.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
 
 class DashboardSummaryEntity {
   const DashboardSummaryEntity({

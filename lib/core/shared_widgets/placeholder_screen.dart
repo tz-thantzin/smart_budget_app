@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_scaffold.dart';
+import 'package:budget_app/core/shared_widgets/app_scaffold.dart';
 
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({required this.title, super.key});

@@ -1,6 +1,6 @@
-import '../../domain/entities/category_entity.dart';
-import '../../domain/repositories/category_repository.dart';
-import '../datasources/local_database_datasource.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/repositories/category_repository.dart';
+import 'package:budget_app/data/datasources/local_database_datasource.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   CategoryRepositoryImpl(this._dataSource);

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/extensions/build_context_extensions.dart';
-import '../../di/app_providers.dart';
-import '../../router/app_routes.dart';
-import '../viewmodels/settings_viewmodel.dart';
+import 'package:budget_app/core/extensions/build_context_extensions.dart';
+import 'package:budget_app/di/app_providers.dart';
+import 'package:budget_app/router/app_routes.dart';
+import 'package:budget_app/presentation/viewmodels/settings_viewmodel.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

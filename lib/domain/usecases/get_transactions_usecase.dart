@@ -1,5 +1,5 @@
-import '../entities/transaction_entity.dart';
-import '../repositories/transaction_repository.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/domain/repositories/transaction_repository.dart';
 
 class GetTransactionsUseCase {
   const GetTransactionsUseCase(this._repository);

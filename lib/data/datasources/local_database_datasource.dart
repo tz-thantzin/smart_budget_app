@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/enums.dart';
-import '../../domain/entities/transaction_entity.dart';
-import '../models/budget_model.dart';
-import '../models/transaction_model.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/entities/enums.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/data/models/budget_model.dart';
+import 'package:budget_app/data/models/transaction_model.dart';
 
 class LocalDatabaseDataSource {
   static const _databaseName = 'budget_app.db';
@@ -103,6 +103,7 @@ class LocalDatabaseDataSource {
             period_type TEXT NOT NULL,
             start_date INTEGER NOT NULL,
             end_date INTEGER NOT NULL,
+            -- Stored but not authoritative: display spent is recomputed in BudgetViewModel.
             spent_amount REAL NOT NULL,
             alert_threshold_percent REAL NOT NULL,
             rollover_enabled INTEGER NOT NULL

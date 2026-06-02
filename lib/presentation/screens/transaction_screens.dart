@@ -5,20 +5,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 
-import '../../core/constants/app_currency.dart';
-import '../../core/extensions/build_context_extensions.dart';
-import '../../core/shared_widgets/app_selection_field.dart';
-import '../../core/shared_widgets/app_scaffold.dart';
-import '../../core/utils/formatters.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/enums.dart';
-import '../../domain/entities/transaction_entity.dart';
-import '../../l10n/app_localizations.dart';
-import '../../router/app_routes.dart';
-import '../viewmodels/budget_viewmodel.dart';
-import '../viewmodels/category_viewmodel.dart';
-import '../viewmodels/settings_viewmodel.dart';
-import '../viewmodels/transaction_viewmodel.dart';
+import 'package:budget_app/core/constants/app_currency.dart';
+import 'package:budget_app/core/extensions/build_context_extensions.dart';
+import 'package:budget_app/core/shared_widgets/app_selection_field.dart';
+import 'package:budget_app/core/shared_widgets/app_scaffold.dart';
+import 'package:budget_app/core/utils/formatters.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/entities/enums.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/l10n/app_localizations.dart';
+import 'package:budget_app/router/app_routes.dart';
+import 'package:budget_app/presentation/viewmodels/budget_viewmodel.dart';
+import 'package:budget_app/presentation/viewmodels/category_viewmodel.dart';
+import 'package:budget_app/presentation/viewmodels/settings_viewmodel.dart';
+import 'package:budget_app/presentation/viewmodels/transaction_viewmodel.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});

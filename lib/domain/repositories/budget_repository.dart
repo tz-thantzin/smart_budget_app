@@ -1,4 +1,4 @@
-import '../entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
 
 abstract class BudgetRepository {
   Future<List<BudgetEntity>> fetchBudgets();

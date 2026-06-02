@@ -110,3 +110,9 @@ flutter build ipa        # iOS release build
 - A default `Food` expense category (id `default_food`) is seeded on fresh install.
 - Currency formatting reads `decimalDigits` from the `AppCurrency` enum — adding a new currency requires an entry there. Some currencies use 0 decimal places (MMK, JPY, KRW).
 - PDF export uses built-in Helvetica fonts (no network required). Currency amounts are formatted with the ISO code prefix (e.g. `THB 1,234.56`) to avoid font glyph issues with special currency symbols.
+
+## Upcoming Features
+
+- **Wallet / Account Management** — add, edit, and delete wallets such as cash, bank, mobile wallet, and credit card accounts; choose a wallet when recording transactions; view balances by wallet.
+- **Savings Goals** — create savings targets with progress tracking, target dates, and goal summaries.
+- **Tags & Receipt Images** — add searchable tags to transactions and attach receipt images for better transaction records.

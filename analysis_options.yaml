@@ -1,4 +1,9 @@
 include: package:lints/recommended.yaml
+linter:
+  rules:
+    - always_use_package_imports
+    - parameter_assignments
+    - sort_unnamed_constructors_first
 analyzer:
   errors:
     missing_return: error

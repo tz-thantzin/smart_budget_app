@@ -1,5 +1,5 @@
-import '../entities/category_entity.dart';
-import '../repositories/category_repository.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/repositories/category_repository.dart';
 
 class AddCategoryUseCase {
   const AddCategoryUseCase(this._repository);

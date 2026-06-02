@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../domain/entities/budget_entity.dart';
-import '../domain/entities/category_entity.dart';
-import '../domain/entities/transaction_entity.dart';
-import '../presentation/screens/budget_screens.dart';
-import '../presentation/screens/category_screens.dart';
-import '../presentation/screens/dashboard_screen.dart';
-import '../presentation/screens/login_screen.dart';
-import '../presentation/screens/reports_analytics_screen.dart';
-import '../presentation/screens/settings_screen.dart';
-import '../presentation/screens/splash_screen.dart';
-import '../presentation/screens/transaction_screens.dart';
-import 'app_routes.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/presentation/screens/budget_screens.dart';
+import 'package:budget_app/presentation/screens/category_screens.dart';
+import 'package:budget_app/presentation/screens/dashboard_screen.dart';
+import 'package:budget_app/presentation/screens/login_screen.dart';
+import 'package:budget_app/presentation/screens/reports_analytics_screen.dart';
+import 'package:budget_app/presentation/screens/settings_screen.dart';
+import 'package:budget_app/presentation/screens/splash_screen.dart';
+import 'package:budget_app/presentation/screens/transaction_screens.dart';
+import 'package:budget_app/router/app_routes.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 

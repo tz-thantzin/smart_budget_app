@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../di/app_providers.dart';
-import '../../domain/entities/dashboard_summary_entity.dart';
+import 'package:budget_app/di/app_providers.dart';
+import 'package:budget_app/domain/entities/dashboard_summary_entity.dart';
 
 final dashboardViewModelProvider =
     AsyncNotifierProvider<DashboardViewModel, DashboardSummaryEntity>(

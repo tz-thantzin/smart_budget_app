@@ -1,8 +1,8 @@
-import '../../domain/entities/dashboard_summary_entity.dart';
-import '../../domain/entities/enums.dart';
-import '../../domain/repositories/dashboard_repository.dart';
-import '../datasources/local_database_datasource.dart';
-import '../datasources/local_memory_datasource.dart';
+import 'package:budget_app/domain/entities/dashboard_summary_entity.dart';
+import 'package:budget_app/domain/entities/enums.dart';
+import 'package:budget_app/domain/repositories/dashboard_repository.dart';
+import 'package:budget_app/data/datasources/local_database_datasource.dart';
+import 'package:budget_app/data/datasources/local_memory_datasource.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
   DashboardRepositoryImpl(this._dataSource, this._databaseDataSource);
@@ -32,9 +32,11 @@ class DashboardRepositoryImpl implements DashboardRepository {
     final topCategoryIds = expenseByCategory.keys.toList()
       ..sort((a, b) => expenseByCategory[b]!.compareTo(expenseByCategory[a]!));
 
-    final topSpendingCategories = categories
-        .where((cat) => topCategoryIds.take(3).contains(cat.id))
-        .toList();
+    final categoryById = {for (final cat in categories) cat.id: cat};
+    final topSpendingCategories = [
+      for (final id in topCategoryIds.take(3))
+        if (categoryById[id] != null) categoryById[id]!,
+    ];
 
     return DashboardSummaryEntity(
       totalBalance: totalIncome - totalExpense,

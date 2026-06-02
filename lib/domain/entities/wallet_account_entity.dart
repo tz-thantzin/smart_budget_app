@@ -1,4 +1,4 @@
-import 'enums.dart';
+import 'package:budget_app/domain/entities/enums.dart';
 
 class WalletAccountEntity {
   const WalletAccountEntity({

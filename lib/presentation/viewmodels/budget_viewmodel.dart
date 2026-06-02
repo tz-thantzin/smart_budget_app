@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/utils/id_generator.dart';
-import '../../di/app_providers.dart';
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/enums.dart';
-import '../../domain/entities/transaction_entity.dart';
-import 'dashboard_viewmodel.dart';
+import 'package:budget_app/core/utils/id_generator.dart';
+import 'package:budget_app/di/app_providers.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
+import 'package:budget_app/domain/entities/enums.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/presentation/viewmodels/dashboard_viewmodel.dart';
 
 final budgetViewModelProvider =
     AsyncNotifierProvider<BudgetViewModel, List<BudgetEntity>>(

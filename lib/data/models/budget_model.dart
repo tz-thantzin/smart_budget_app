@@ -1,5 +1,5 @@
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/entities/enums.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/entities/enums.dart';
 
 class BudgetModel extends BudgetEntity {
   const BudgetModel({

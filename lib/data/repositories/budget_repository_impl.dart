@@ -1,6 +1,6 @@
-import '../../domain/entities/budget_entity.dart';
-import '../../domain/repositories/budget_repository.dart';
-import '../datasources/local_database_datasource.dart';
+import 'package:budget_app/domain/entities/budget_entity.dart';
+import 'package:budget_app/domain/repositories/budget_repository.dart';
+import 'package:budget_app/data/datasources/local_database_datasource.dart';
 
 class BudgetRepositoryImpl implements BudgetRepository {
   BudgetRepositoryImpl(this._dataSource);

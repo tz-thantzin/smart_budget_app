@@ -1,5 +1,5 @@
-import '../entities/dashboard_summary_entity.dart';
-import '../repositories/dashboard_repository.dart';
+import 'package:budget_app/domain/entities/dashboard_summary_entity.dart';
+import 'package:budget_app/domain/repositories/dashboard_repository.dart';
 
 class GetDashboardSummaryUseCase {
   const GetDashboardSummaryUseCase(this._repository);

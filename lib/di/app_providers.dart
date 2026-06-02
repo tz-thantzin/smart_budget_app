@@ -1,25 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/services/biometric_auth_service.dart';
-import '../data/datasources/local_database_datasource.dart';
-import '../data/datasources/local_memory_datasource.dart';
-import '../data/repositories/budget_repository_impl.dart';
-import '../data/repositories/category_repository_impl.dart';
-import '../data/repositories/dashboard_repository_impl.dart';
-import '../data/repositories/transaction_repository_impl.dart';
-import '../domain/usecases/add_budget_usecase.dart';
-import '../domain/usecases/add_category_usecase.dart';
-import '../domain/usecases/add_transaction_usecase.dart';
-import '../domain/usecases/delete_budget_usecase.dart';
-import '../domain/usecases/delete_transaction_usecase.dart';
-import '../domain/usecases/delete_category_usecase.dart';
-import '../domain/usecases/get_budgets_usecase.dart';
-import '../domain/usecases/get_categories_usecase.dart';
-import '../domain/usecases/get_dashboard_summary_usecase.dart';
-import '../domain/usecases/get_transactions_usecase.dart';
-import '../domain/usecases/update_transaction_usecase.dart';
-import '../domain/usecases/update_budget_usecase.dart';
-import '../domain/usecases/update_category_usecase.dart';
+import 'package:budget_app/core/services/biometric_auth_service.dart';
+import 'package:budget_app/data/datasources/local_database_datasource.dart';
+import 'package:budget_app/data/datasources/local_memory_datasource.dart';
+import 'package:budget_app/data/repositories/budget_repository_impl.dart';
+import 'package:budget_app/data/repositories/category_repository_impl.dart';
+import 'package:budget_app/data/repositories/dashboard_repository_impl.dart';
+import 'package:budget_app/data/repositories/transaction_repository_impl.dart';
+import 'package:budget_app/domain/usecases/add_budget_usecase.dart';
+import 'package:budget_app/domain/usecases/add_category_usecase.dart';
+import 'package:budget_app/domain/usecases/add_transaction_usecase.dart';
+import 'package:budget_app/domain/usecases/delete_budget_usecase.dart';
+import 'package:budget_app/domain/usecases/delete_transaction_usecase.dart';
+import 'package:budget_app/domain/usecases/delete_category_usecase.dart';
+import 'package:budget_app/domain/usecases/get_budgets_usecase.dart';
+import 'package:budget_app/domain/usecases/get_categories_usecase.dart';
+import 'package:budget_app/domain/usecases/get_dashboard_summary_usecase.dart';
+import 'package:budget_app/domain/usecases/get_transactions_usecase.dart';
+import 'package:budget_app/domain/usecases/update_transaction_usecase.dart';
+import 'package:budget_app/domain/usecases/update_budget_usecase.dart';
+import 'package:budget_app/domain/usecases/update_category_usecase.dart';
 
 final localDataSourceProvider = Provider<LocalMemoryDataSource>((ref) {
   return LocalMemoryDataSource();

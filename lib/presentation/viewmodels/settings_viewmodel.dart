@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/constants/app_currency.dart';
-import '../../core/constants/app_constants.dart';
-import '../../di/app_providers.dart';
+import 'package:budget_app/core/constants/app_currency.dart';
+import 'package:budget_app/core/constants/app_constants.dart';
+import 'package:budget_app/di/app_providers.dart';
 
 class AppSettings {
   const AppSettings({

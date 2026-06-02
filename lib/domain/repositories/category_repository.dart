@@ -1,4 +1,4 @@
-import '../entities/category_entity.dart';
+import 'package:budget_app/domain/entities/category_entity.dart';
 
 abstract class CategoryRepository {
   Future<List<CategoryEntity>> fetchCategories();

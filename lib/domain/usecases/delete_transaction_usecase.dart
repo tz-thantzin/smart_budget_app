@@ -1,4 +1,4 @@
-import '../repositories/transaction_repository.dart';
+import 'package:budget_app/domain/repositories/transaction_repository.dart';
 
 class DeleteTransactionUseCase {
   const DeleteTransactionUseCase(this._repository);

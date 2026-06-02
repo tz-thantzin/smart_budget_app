@@ -1,6 +1,6 @@
-import '../../domain/entities/transaction_entity.dart';
-import '../../domain/repositories/transaction_repository.dart';
-import '../datasources/local_database_datasource.dart';
+import 'package:budget_app/domain/entities/transaction_entity.dart';
+import 'package:budget_app/domain/repositories/transaction_repository.dart';
+import 'package:budget_app/data/datasources/local_database_datasource.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   TransactionRepositoryImpl(this._dataSource);
